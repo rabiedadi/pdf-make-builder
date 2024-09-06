@@ -1,0 +1,30 @@
+:host {
+  @apply flex;
+  .checkbox {
+    @apply relative h-6 w-6 rounded-sm border-2 border-gray-700;
+    &.checked {
+      &::after {
+        content: "";
+        position: absolute;
+        height: 6px;
+        width: 12px;
+        border-bottom: 2px solid #374151;
+        border-left: 2px solid #374151;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -68%) rotate(-45deg);
+      }
+    }
+    &.indeterminate {
+      &::after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        border-bottom: 2px solid #374151;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}

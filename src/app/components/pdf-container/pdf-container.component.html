@@ -1,0 +1,71 @@
+<ng-container
+  *ngIf="{
+    focusedElement: focusedElement | async
+  } as data"
+>
+  <div
+    *ngIf="container"
+    class="flex flex-col min-h-12 h-full"
+    [class.outlined]="showOutline"
+    [PdfItemStyleApplier]="container"
+    cdkDropList
+    [cdkDropListData]="container.elements"
+    (cdkDropListDropped)="dropped($event)"
+    [cdkDropListConnectedTo]="connectedLists"
+    [cdkDropListEnterPredicate]="allowDropPredicate"
+  >
+    <div
+      *ngFor="let item of container.elements"
+      cdkDrag
+      [ngClass]="{
+        'item-focused':
+          data.focusedElement?.type !== 'row' &&
+          data.focusedElement?.uId == item.uId
+      }"
+      [cdkDragData]="item"
+      (cdkDragMoved)="dragMoved($event)"
+      (cdkDragReleased)="dragReleased($event)"
+      (click)="$event.stopPropagation(); setFocusedElement(item)"
+    >
+      <!-- --------------------------- cdkDragPreview ---------------------------- -->
+      <div
+        *cdkDragPreview
+        class="flex items-center gap-2 bg-gray-200 h-10 w-60 p-2 text-gray-700"
+      >
+        <span class="material-icons text-lg">
+          {{ item.iconName }}
+        </span>
+        {{ item.type }}
+      </div>
+      <!-- ------------------------- cdkDragPlaceholder -------------------------- -->
+      <div
+        *cdkDragPlaceholder
+        class="flex items-center gap-2 bg-gray-200 h-10 w-60 p-2 text-gray-700"
+      >
+        <span class="material-icons text-lg">
+          {{ item.iconName }}
+        </span>
+        {{ item.type }}
+      </div>
+
+      <ng-container [ngSwitch]="item.type">
+        <app-pdf-text
+          *ngSwitchCase="'text'"
+          [control]="$any(item)"
+        ></app-pdf-text>
+
+        <app-pdf-image
+          *ngSwitchCase="'image'"
+          [control]="$any(item)"
+        ></app-pdf-image>
+
+        <app-pdf-check
+          *ngSwitchCase="'check'"
+          [control]="$any(item)"
+        ></app-pdf-check>
+
+        <app-pdf-row *ngSwitchCase="'row'" [control]="$any(item)"></app-pdf-row>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

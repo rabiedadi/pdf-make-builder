@@ -1,0 +1,14 @@
+.pdf-viewer {
+  min-width: 21cm;
+  max-width: 21cm;
+  margin: 0 auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  height: fit-content;
+  flex: 1 0 auto;
+  background: white;
+}
+
+mat-tab-group {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}

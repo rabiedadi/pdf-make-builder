@@ -1,0 +1,410 @@
+<ng-container *ngIf="selectedElement">
+  <div
+    class="grid gap-2 gap-y-4 my-2"
+    style="grid-template-columns: 120px auto auto"
+  >
+    <!-- -------------------------------- delet -------------------------------- -->
+    <span class="col-span-1">Delete</span>
+    <div class="col-span-2 flex justify-center">
+      <mat-icon class="cursor-pointer" (click)="delElement(selectedElement.uId)"
+        >delete</mat-icon
+      >
+    </div>
+    <!-- ------------------------------- Border -------------------------------- -->
+    <span class="col-span-1">Border </span>
+    <div class="col-span-2 grid grid-cols-5 gap-2">
+      <div></div>
+      <input
+        type="number"
+        class="col-start-2 col-span-3 text-center"
+        [(ngModel)]="selectedElement.bt"
+      />
+      <div></div>
+
+      <input
+        type="number"
+        class="col-start-1 col-span-2 text-center"
+        [(ngModel)]="selectedElement.bl"
+      />
+
+      <input
+        type="color"
+        class="col-start-3 col-span-1"
+        [(ngModel)]="selectedElement.bColor"
+      />
+
+      <input
+        type="number"
+        class="col-start-4 col-span-2 text-center"
+        [(ngModel)]="selectedElement.br"
+      />
+      <div></div>
+
+      <input
+        type="number"
+        class="col-start-2 col-span-3 text-center"
+        [(ngModel)]="selectedElement.bb"
+      />
+      <div></div>
+    </div>
+    <!-- ------------------------------ padding ------------------------------ -->
+    <span class="col-span-1">Padding </span>
+    <div class="col-span-2 grid grid-cols-5 gap-2">
+      <div></div>
+      <input
+        type="number"
+        class="col-start-2 col-span-3 text-center"
+        [(ngModel)]="selectedElement.pt"
+      />
+      <div></div>
+
+      <input
+        type="number"
+        class="col-start-1 col-span-2 text-center"
+        [(ngModel)]="selectedElement.pl"
+      />
+      <div></div>
+
+      <input
+        type="number"
+        class="col-start-4 col-span-2 text-center"
+        [(ngModel)]="selectedElement.pr"
+      />
+      <div></div>
+
+      <input
+        type="number"
+        class="col-start-2 col-span-3 text-center"
+        [(ngModel)]="selectedElement.pb"
+      />
+      <div></div>
+    </div>
+
+    <!-- ---------------------------- text-element ----------------------------- -->
+    <ng-container *ngIf="selectedElement.type == 'text'">
+      <!-- ------------------------------- content ------------------------------- -->
+      <span class="col-span-1">Content</span>
+      <textarea
+        placeholder="Add content here"
+        class="col-span-2"
+        [(ngModel)]="$any(selectedElement)!.content"
+      ></textarea>
+      <!-- ------------------------------ font size ------------------------------ -->
+      <span class="col-span-1">Font size</span>
+      <input
+        class="col-span-2"
+        type="number"
+        [(ngModel)]="$any(selectedElement)!.fontSize"
+      />
+      <!-- ------------------------------ font weight ------------------------------ -->
+      <span class="col-span-1">Font wight</span>
+      <div class="flex items-center col-span-2 gap-1">
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.fontWeight == '300'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).fontWeight = '300'"
+        >
+          Thin
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.fontWeight == '400'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).fontWeight = '400'"
+        >
+          Normal
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.fontWeight == '500'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).fontWeight = '500'"
+        >
+          Bold
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.fontWeight == '600'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).fontWeight = '600'"
+        >
+          Bolder
+        </button>
+      </div>
+
+      <span class="col-span-1">Text color</span>
+      <input
+        class="col-span-2"
+        type="color"
+        [(ngModel)]="$any(selectedElement)!.color"
+      />
+    </ng-container>
+
+    <!-- --------------------------- image-element ----------------------------- -->
+    <ng-container *ngIf="selectedElement.type == 'image'">
+      <span class="col-span-1">Src</span>
+      <input
+        class="col-span-2"
+        type="text"
+        [(ngModel)]="$any(selectedElement)!.src"
+      />
+
+      <span class="col-span-1">Height</span>
+      <input
+        class="col-span-2"
+        type="number"
+        [(ngModel)]="$any(selectedElement)!.height"
+      />
+
+      <span class="col-span-1">Width</span>
+      <input
+        class="col-span-2"
+        type="number"
+        [(ngModel)]="$any(selectedElement)!.width"
+      />
+
+      <!-- <span class="col-span-1">Unit</span>
+      <div class="flex items-center col-span-2 gap-1">
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.unit == '%' ? 'bg-blue-300' : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).unit = '%'"
+        >
+          %
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.unit == 'px' ? 'bg-blue-300' : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).unit = 'px'"
+        >
+          px
+        </button>
+      </div> -->
+    </ng-container>
+
+    <!-- ---------------------------- check element ---------------------------- -->
+    <ng-container *ngIf="selectedElement.type == 'check'">
+      <span class="col-span-1">Value</span>
+      <input
+        class="col-span-2"
+        type="string"
+        placeholder="Leave blank to mark as checked"
+        [(ngModel)]="$any(selectedElement)!.value"
+      />
+
+      <span class="col-span-1">Content</span>
+      <input
+        class="col-span-2"
+        type="string"
+        [(ngModel)]="$any(selectedElement)!.content"
+      />
+    </ng-container>
+
+    <!-- ----------------------------- row-element ----------------------------- -->
+    <ng-container *ngIf="selectedElement.type == 'row'">
+      <span class="col-span-1">Vertical alignment</span>
+      <div class="flex items-center col-span-2 gap-1">
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.verticalAlign == 'top'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).verticalAlign = 'top'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >vertical_align_top</mat-icon
+          >
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.verticalAlign == 'middle'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).verticalAlign = 'middle'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >vertical_align_center</mat-icon
+          >
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.verticalAlign == 'bottom'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).verticalAlign = 'bottom'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >vertical_align_bottom</mat-icon
+          >
+        </button>
+      </div>
+
+      <span class="col-span-1">Columns</span>
+      <div class="col-span-2 flex gap-2">
+        <div class="flex-1 gap-1 grid grid-cols-12">
+          <div
+            *ngFor="let col of $any(selectedElement)!.columns; index as i"
+            class="px-1 text-sm truncate h-9 rounded-sm flex items-center justify-between hover:bg-gray-200"
+            [ngClass]="[
+              'col-span-' + col.cols,
+              col.uId == selectedContainer?.uId ? 'bg-blue-300' : 'bg-gray-100'
+            ]"
+            (click)="selectedContainer = col"
+          >
+            <input
+              class="w-full !px-0 text-center mx-auto max-w-12"
+              type="number"
+              [(ngModel)]="col.cols"
+            />
+          </div>
+        </div>
+        <button
+          *ngIf="$any(selectedElement).remainingCols"
+          (click)="$any(selectedElement).addColumn(2)"
+          class="h-9 w-9 border-0 bg-gray-300"
+        >
+          +
+        </button>
+      </div>
+      <!-- -------------------------- container element -------------------------- -->
+      <ng-container *ngIf="selectedContainer">
+        <div class="col-span-3">
+          <hr />
+          <p class="text-center p-4 text-base">Container settings</p>
+        </div>
+        <span class="col-span-1">Move</span>
+        <div class="col-span-2 flex justify-around">
+          <mat-icon
+            class="cursor-pointer"
+            (click)="
+              $any(selectedElement).flipColumns(selectedContainer.uId, -1)
+            "
+            >chevron_left</mat-icon
+          >
+          <mat-icon
+            class="cursor-pointer"
+            (click)="
+              $any(selectedElement).flipColumns(selectedContainer.uId, 1)
+            "
+            >chevron_right</mat-icon
+          >
+        </div>
+
+        <span class="col-span-1">Delete</span>
+        <div class="col-span-2 flex justify-center">
+          <mat-icon
+            class="cursor-pointer"
+            (click)="delElement(selectedContainer.uId)"
+            >delete</mat-icon
+          >
+        </div>
+        <!-- ------------------------------- border -------------------------------- -->
+        <span class="col-span-1">Border </span>
+        <div class="col-span-2 grid grid-cols-5 gap-2">
+          <div></div>
+          <input
+            type="number"
+            class="col-start-2 col-span-3 text-center"
+            [(ngModel)]="selectedContainer.bt"
+          />
+          <div></div>
+
+          <input
+            type="number"
+            class="col-start-1 col-span-2 text-center"
+            [(ngModel)]="selectedContainer.bl"
+          />
+
+          <input
+            type="color"
+            class="col-start-3 col-span-1"
+            [(ngModel)]="selectedContainer.bColor"
+          />
+
+          <input
+            type="number"
+            class="col-start-4 col-span-2 text-center"
+            [(ngModel)]="selectedContainer.br"
+          />
+          <div></div>
+
+          <input
+            type="number"
+            class="col-start-2 col-span-3 text-center"
+            [(ngModel)]="selectedContainer.bb"
+          />
+          <div></div>
+        </div>
+        <!-- ------------------------------ padding ------------------------------ -->
+        <span class="col-span-1">Padding </span>
+        <div class="col-span-2 grid grid-cols-5 gap-2">
+          <div></div>
+          <input
+            type="number"
+            class="col-start-2 col-span-3 text-center"
+            [(ngModel)]="selectedContainer.pt"
+          />
+          <div></div>
+
+          <input
+            type="number"
+            class="col-start-1 col-span-2 text-center"
+            [(ngModel)]="selectedContainer.pl"
+          />
+          <div></div>
+
+          <input
+            type="number"
+            class="col-start-4 col-span-2 text-center"
+            [(ngModel)]="selectedContainer.pr"
+          />
+          <div></div>
+
+          <input
+            type="number"
+            class="col-start-2 col-span-3 text-center"
+            [(ngModel)]="selectedContainer.pb"
+          />
+          <div></div>
+        </div>
+        <span class="col-span-1">Text color</span>
+        <input
+          class="col-span-2"
+          type="color"
+          [(ngModel)]="$any(selectedContainer)!.color"
+        />
+        <span class="col-span-1">background color</span>
+        <input
+          class="col-span-2"
+          type="color"
+          [(ngModel)]="$any(selectedContainer)!.bgColor"
+        />
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="selectedElement.type == 'container'"></ng-container>
+  </div>
+</ng-container>

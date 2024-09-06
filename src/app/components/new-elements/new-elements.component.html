@@ -1,0 +1,44 @@
+<div
+  id="toolbox"
+  class="flex flex-col gap-2 my-2"
+  cdkDropList
+  cdkDropListSortingDisabled
+  (cdkDropListExited)="dropListExited($event)"
+  (cdkDropListEntered)="dropListEntered()"
+  [cdkDropListData]="items"
+  [cdkDropListEnterPredicate]="disallowDropPredicate"
+  [cdkDropListConnectedTo]="connectedLists"
+>
+  <ng-container *ngFor="let item of items">
+    <ng-container>
+      <div
+        [ngSwitch]="item.type"
+        class="flex items-center gap-2 rounded-sm h-10 overflow-hidden"
+        cdkDrag
+        [cdkDragData]="item"
+        (cdkDragMoved)="dragMoved($event)"
+        (cdkDragReleased)="dragReleased($event)"
+      >
+        <ng-container *ngSwitchCase="'row'">
+          <div
+            *ngFor="let c of $any(item).columns"
+            class="h-10 bg-gray-200 flex-1 flex items-center justify-center text-xs text-gray-500"
+            [style.flexBasis.%]="(c.cols * 100) / 12"
+          >
+            {{ c.cols }}
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <div
+            class="flex items-center gap-2 bg-gray-200 h-full w-full p-2 text-gray-700"
+          >
+            <span class="material-icons text-lg">
+              {{ item.iconName }}
+            </span>
+            {{ item.type }}
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

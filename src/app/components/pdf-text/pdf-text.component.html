@@ -1,0 +1,12 @@
+<div
+  #editable
+  class="editable"
+  contentEditable="true"
+  spellcheck="false"
+  placeholder="Type something..."
+  [innerText]="control.content"
+  [PdfItemStyleApplier]="control"
+  [style.font-size.px]="control.fontSize"
+  [style.font-weight]="control.fontWeight"
+  (input)="onInput($event)"
+></div>

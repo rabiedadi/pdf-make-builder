@@ -1,0 +1,28 @@
+<ng-container
+  *ngIf="{
+    focusedElement: focusedElement | async
+  } as data"
+>
+  <div
+    class="row-selector"
+    (click)="$event.stopPropagation(); setFocusedElement(control)"
+    [ngClass]="{
+      focused: data.focusedElement?.uId == control.uId
+    }"
+  ></div>
+  <div
+    [PdfItemStyleApplier]="control"
+    class="flex z-10 relative"
+    [ngClass]="control.verticalAlign + '-align'"
+    style="gap: 1px"
+    *ngIf="control"
+  >
+    <div
+      *ngFor="let column of control.columns"
+      [style.flexBasis.%]="(column.cols * 100) / 12"
+      class="flex-initial no-drop items-stretch"
+    >
+      <app-pdf-container [container]="column"></app-pdf-container>
+    </div>
+  </div>
+</ng-container>

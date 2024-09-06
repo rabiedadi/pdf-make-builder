@@ -1,0 +1,19 @@
+:host {
+  @apply block h-full;
+  .outlined {
+    border: 1px dashed gray;
+  }
+  .material-icons {
+    margin-right: 0.5rem;
+  }
+  ::ng-deep {
+    .item-focused {
+      z-index: 10;
+      .editable,
+      app-pdf-image > div,
+      app-pdf-check > div {
+        outline: 2px solid #279aff;
+      }
+    }
+  }
+}

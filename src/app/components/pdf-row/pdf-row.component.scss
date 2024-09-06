@@ -1,0 +1,29 @@
+:host {
+  @apply block relative;
+  .row-selector {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: calc(max(36cm, 100vw) - min(33rem, calc(100vw - 33rem)));
+    height: 100%;
+    transform: translateX(-50%);
+    &:hover {
+      border: 2px solid #0b95ffad;
+    }
+    &.focused {
+      border: 2px solid #0b96ff;
+    }
+  }
+
+  ::ng-deep {
+    .top-align > div > app-pdf-container > div {
+      justify-content: start;
+    }
+    .middle-align > div > app-pdf-container > div {
+      justify-content: center;
+    }
+    .bottom-align > div > app-pdf-container > div {
+      justify-content: end;
+    }
+  }
+}
