@@ -6,7 +6,7 @@
   placeholder="Type something..."
   [innerText]="control.content"
   [PdfItemStyleApplier]="control"
-  [style.font-size.px]="control.fontSize"
-  [style.font-weight]="control.fontWeight"
+  [style.font-size.pt]="control.fontSize"
+  [style.font-weight]="control.bold ? '500' : '400'"
   (input)="onInput($event)"
 ></div>

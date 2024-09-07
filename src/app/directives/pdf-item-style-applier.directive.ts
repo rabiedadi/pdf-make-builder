@@ -17,7 +17,7 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
   @Input({ required: true, alias: 'PdfItemStyleApplier' })
   pdfItem!: pdfTree.PdfItem;
   subscription!: Subscription;
-
+  unit = 'pt';
   constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
@@ -37,26 +37,27 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
 
     element.setAttribute('data-id', uId);
 
-    element.style.borderTop = `${bt}px`;
-    element.style.borderBottom = `${bb}px`;
-    element.style.borderLeft = `${bl}px`;
-    element.style.borderRight = `${br}px`;
+    element.style.borderTop = `${bt}${this.unit}`;
+    element.style.borderBottom = `${bb}${this.unit}`;
+    element.style.borderLeft = `${bl}${this.unit}`;
+    element.style.borderRight = `${br}${this.unit}`;
 
     if (bColor) {
       element.style.borderColor = bColor;
       element.style.borderStyle = 'solid';
     }
 
-    element.style.paddingTop = `${pt}px`;
-    element.style.paddingBottom = `${pb}px`;
-    element.style.paddingLeft = `${pl}px`;
-    element.style.paddingRight = `${pr}px`;
+    element.style.paddingTop = `${pt}${this.unit}`;
+    element.style.paddingBottom = `${pb}${this.unit}`;
+    element.style.paddingLeft = `${pl}${this.unit}`;
+    element.style.paddingRight = `${pr}${this.unit}`;
 
     if (type == pdfTree.PdfItemType.TEXT) {
-      const { fontSize, fontWeight, color } = this
+      const { fontSize, bold, italics, color } = this
         .pdfItem as pdfTree.TextElement;
-      element.style.fontSize = `${fontSize}px`;
-      element.style.fontWeight = `${fontWeight}px`;
+      element.style.fontSize = `${fontSize}${this.unit}`;
+      element.style.fontWeight = bold ? '500' : '400';
+      element.style.fontStyle = italics ? 'italic' : '';
       element.style.color = `${color}`;
     }
 
@@ -68,8 +69,8 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
 
     if (type == pdfTree.PdfItemType.IMAGE) {
       const { width, height, src } = this.pdfItem as pdfTree.ImageElement;
-      element.style.width = `${width}px`;
-      element.style.height = `${height}px`;
+      element.style.width = `${width}${this.unit}`;
+      element.style.height = `${height}${this.unit}`;
       element.style.backgroundImage = src ? `url(${src})` : '';
     }
 

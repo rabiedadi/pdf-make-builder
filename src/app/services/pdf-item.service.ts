@@ -11,6 +11,12 @@ export class PdfItemService {
   parentContainer$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
     undefined
   );
+  Header$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
+    undefined
+  );
+  footer$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
+    undefined
+  );
   focusedElement$ = new BehaviorSubject<pdfTree.PdfItem | undefined>(undefined);
 
   public pdfItems: { [key in pdfTree.PdfItemType]: PdfElementConstructor } = {
@@ -23,14 +29,26 @@ export class PdfItemService {
 
   init() {
     this.parentContainer$.next(
-      this.createPdfItem(pdfTree.PdfItemType.CONTAINER)
+      this.createPdfItem(
+        pdfTree.PdfItemType.CONTAINER,
+        12, // cols
+        {}, // containerSettings
+        {
+          pt: 20,
+          pb: 20,
+          pr: 20,
+          pl: 20,
+        }
+      )
     );
+    this.Header$.next(this.createPdfItem(pdfTree.PdfItemType.CONTAINER));
+    this.footer$.next(this.createPdfItem(pdfTree.PdfItemType.CONTAINER));
   }
 
   public createPdfItem<T = pdfTree.PdfItem>(
     type: pdfTree.PdfItemType,
     ...data: any
   ): T {
-    return new this.pdfItems[type](data as any) as T;
+    return new this.pdfItems[type](...(data as any)) as T;
   }
 }

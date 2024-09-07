@@ -17,6 +17,8 @@
       <input
         type="number"
         class="col-start-2 col-span-3 text-center"
+        max="1"
+        min="0"
         [(ngModel)]="selectedElement.bt"
       />
       <div></div>
@@ -24,6 +26,8 @@
       <input
         type="number"
         class="col-start-1 col-span-2 text-center"
+        max="1"
+        min="0"
         [(ngModel)]="selectedElement.bl"
       />
 
@@ -36,6 +40,8 @@
       <input
         type="number"
         class="col-start-4 col-span-2 text-center"
+        max="1"
+        min="0"
         [(ngModel)]="selectedElement.br"
       />
       <div></div>
@@ -43,6 +49,8 @@
       <input
         type="number"
         class="col-start-2 col-span-3 text-center"
+        max="1"
+        min="0"
         [(ngModel)]="selectedElement.bb"
       />
       <div></div>
@@ -96,52 +104,28 @@
         type="number"
         [(ngModel)]="$any(selectedElement)!.fontSize"
       />
-      <!-- ------------------------------ font weight ------------------------------ -->
-      <span class="col-span-1">Font wight</span>
+      <!-- ----------------------------- font style ------------------------------ -->
+      <span class="col-span-1">Font Style</span>
       <div class="flex items-center col-span-2 gap-1">
         <button
           class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
           [ngClass]="[
-            $any(selectedElement)!.fontWeight == '300'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
+            $any(selectedElement)!.bold ? 'bg-blue-300' : 'bg-gray-100'
           ]"
-          (click)="$any(selectedElement).fontWeight = '300'"
-        >
-          Thin
-        </button>
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.fontWeight == '400'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).fontWeight = '400'"
-        >
-          Normal
-        </button>
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.fontWeight == '500'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).fontWeight = '500'"
+          (click)="$any(selectedElement).bold = !$any(selectedElement)!.bold"
         >
           Bold
         </button>
         <button
           class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
           [ngClass]="[
-            $any(selectedElement)!.fontWeight == '600'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
+            $any(selectedElement)!.italics ? 'bg-blue-300' : 'bg-gray-100'
           ]"
-          (click)="$any(selectedElement).fontWeight = '600'"
+          (click)="
+            $any(selectedElement).italics = !$any(selectedElement)!.italics
+          "
         >
-          Bolder
+          Italic
         </button>
       </div>
 
@@ -175,28 +159,6 @@
         type="number"
         [(ngModel)]="$any(selectedElement)!.width"
       />
-
-      <!-- <span class="col-span-1">Unit</span>
-      <div class="flex items-center col-span-2 gap-1">
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.unit == '%' ? 'bg-blue-300' : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).unit = '%'"
-        >
-          %
-        </button>
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.unit == 'px' ? 'bg-blue-300' : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).unit = 'px'"
-        >
-          px
-        </button>
-      </div> -->
     </ng-container>
 
     <!-- ---------------------------- check element ---------------------------- -->
@@ -327,6 +289,8 @@
           <div></div>
           <input
             type="number"
+            max="1"
+            min="0"
             class="col-start-2 col-span-3 text-center"
             [(ngModel)]="selectedContainer.bt"
           />
@@ -334,6 +298,8 @@
 
           <input
             type="number"
+            max="1"
+            min="0"
             class="col-start-1 col-span-2 text-center"
             [(ngModel)]="selectedContainer.bl"
           />
@@ -346,6 +312,8 @@
 
           <input
             type="number"
+            max="1"
+            min="0"
             class="col-start-4 col-span-2 text-center"
             [(ngModel)]="selectedContainer.br"
           />
@@ -353,6 +321,8 @@
 
           <input
             type="number"
+            max="1"
+            min="0"
             class="col-start-2 col-span-3 text-center"
             [(ngModel)]="selectedContainer.bb"
           />

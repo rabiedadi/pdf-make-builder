@@ -28,7 +28,8 @@ export namespace pdfTree {
 
   type TextItemSettings = {
     fontSize?: number;
-    fontWeight?: string;
+    bold?: boolean;
+    italics?: boolean;
     color?: string;
   };
 
@@ -178,6 +179,7 @@ export namespace pdfTree {
   /* --------------------------------- Columns -------------------------------- */
   export class RowElement extends PdfItem {
     constructor(public cols: number[] = [6, 6], settings?: PdfItemSettings) {
+      console.log(cols);
       super(PdfItemType.ROW, settings ?? { pt: 4, pb: 4, pr: 4, pl: 4 });
       for (let i = 0; i < cols.length; i++) {
         this.addColumn(cols[i]);
@@ -197,7 +199,7 @@ export namespace pdfTree {
     addColumn(col?: number, index?: number) {
       if (this.columns.length == 6) return;
       col = col ?? Math.min(2, this.remainingCols);
-      index = index !== undefined ? index : this.columns.length - 1;
+      index = index !== undefined ? index : this.columns.length;
       this.columns.splice(index, 0, new ContainerElement(col));
     }
 
@@ -214,6 +216,9 @@ export namespace pdfTree {
         const tmp = container1;
         this.columns[index] = container2;
         this.columns[index + direction] = tmp;
+        const tmp2 = this.cols[index];
+        this.cols[index] = this.cols[index + direction];
+        this.cols[index + direction] = tmp2;
       }
     }
 
@@ -239,6 +244,7 @@ export namespace pdfTree {
     ) {
       super(PdfItemType.CONTAINER, settings ?? { pt: 4, pb: 4, pr: 4, pl: 4 });
       containerSettings && this.setContainerSettings(containerSettings);
+      console.log({ cols, containerSettings });
     }
 
     get color() {
@@ -272,8 +278,9 @@ export namespace pdfTree {
 
   /* ---------------------------------- Text ---------------------------------- */
   export class TextElement extends PdfItem {
-    private _fontSize = 15;
-    private _fontWeight = '400';
+    private _fontSize = 12;
+    private _bold = false;
+    private _italics = false;
     private _color = '#484848';
 
     constructor(
@@ -292,11 +299,18 @@ export namespace pdfTree {
       this._fontSize = v;
       this.changed$.next();
     }
-    get fontWeight() {
-      return this._fontWeight;
+    get bold() {
+      return this._bold;
     }
-    set fontWeight(v: string) {
-      this._fontWeight = v;
+    set bold(v: boolean) {
+      this._bold = v;
+      this.changed$.next();
+    }
+    get italics() {
+      return this._italics;
+    }
+    set italics(v: boolean) {
+      this._italics = v;
       this.changed$.next();
     }
     get color() {
@@ -309,9 +323,9 @@ export namespace pdfTree {
 
     setTextSettings(settings: TextItemSettings) {
       settings.fontSize !== undefined && (this.fontSize = settings.fontSize);
-      settings.fontWeight !== undefined &&
-        (this.fontWeight = settings.fontWeight);
+      settings.italics !== undefined && (this.italics = settings.italics);
       settings.color !== undefined && (this.color = settings.color);
+      settings.bold !== undefined && (this.bold = settings.bold);
     }
   }
 
