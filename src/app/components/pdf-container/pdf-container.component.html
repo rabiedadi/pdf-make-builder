@@ -5,23 +5,28 @@
 >
   <div
     *ngIf="container"
-    class="flex flex-col min-h-12 h-full"
+    class="flex flex-col min-h-9 h-full relative"
     [class.outlined]="showOutline"
+    [class.parent]="container.isParent"
     [PdfItemStyleApplier]="container"
     cdkDropList
     [cdkDropListData]="container.elements"
-    (cdkDropListDropped)="dropped($event)"
     [cdkDropListConnectedTo]="connectedLists"
     [cdkDropListEnterPredicate]="allowDropPredicate"
+    (cdkDropListDropped)="dropped($event)"
   >
     <div
       *ngFor="let item of container.elements"
       cdkDrag
-      [ngClass]="{
-        'item-focused':
-          data.focusedElement?.type !== 'row' &&
-          data.focusedElement?.uId == item.uId
-      }"
+      [ngClass]="[
+        $any(item).rowType ?? '',
+        hasHeader ? 'has-header' : '',
+        hasFooter ? 'has-footer' : '',
+        data.focusedElement?.type !== 'row' &&
+        data.focusedElement?.uId == item.uId
+          ? 'item-focused'
+          : ''
+      ]"
       [cdkDragData]="item"
       (cdkDragMoved)="dragMoved($event)"
       (cdkDragReleased)="dragReleased($event)"

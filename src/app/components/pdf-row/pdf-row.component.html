@@ -13,8 +13,8 @@
   <div
     [PdfItemStyleApplier]="control"
     class="flex z-10 relative"
-    [ngClass]="control.verticalAlign + '-align'"
-    style="gap: 1px"
+    [ngClass]="[control.verticalAlign + '-align']"
+    style="gap: 4pt"
     *ngIf="control"
   >
     <div

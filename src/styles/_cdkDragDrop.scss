@@ -1,8 +1,22 @@
-.cdk-drag
-{
+.cdk-drag {
   cursor: move;
 }
 
-body.dragging * {
-  cursor: move !important;
+body.dragging {
+  app-pdf-container > div:not(.parent) {
+    border: 1px solid lightseagreen !important;
+  }
+  .row-selector {
+    outline: none !important;
+  }
+  .item-focused {
+    .editable,
+    app-pdf-image > div,
+    app-pdf-check > div {
+      outline: none !important;
+    }
+  }
+  * {
+    cursor: move !important;
+  }
 }

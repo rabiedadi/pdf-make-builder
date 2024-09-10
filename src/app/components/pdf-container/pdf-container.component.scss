@@ -1,5 +1,5 @@
 :host {
-  @apply block h-full;
+  @apply block;
   .outlined {
     border: 1px dashed gray;
   }
@@ -15,5 +15,25 @@
         outline: 2px solid #279aff;
       }
     }
+  }
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .content {
+    &.has-header {
+      border-top: 1px dashed #bbbbbb !important;
+    }
+    &.has-footer {
+      border-bottom: 1px dashed #bbbbbb !important;
+    }
+  }
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 }

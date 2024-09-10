@@ -17,6 +17,8 @@ import { ElementSettingsComponent } from './components/element-settings/element-
 import { FormsModule } from '@angular/forms';
 import { PdfCheckComponent } from './components/pdf-check/pdf-check.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { PageSettingsComponent } from './components/page-settings/page-settings.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     PdfImageComponent,
     PdfItemStyleApplier,
     ElementSettingsComponent,
+    PageSettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     DragDropModule,
     MatTabsModule,
     MatIconModule,
+    ClipboardModule,
     BrowserAnimationsModule,
   ],
   providers: [provideAnimationsAsync()],

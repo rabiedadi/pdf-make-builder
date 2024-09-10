@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { pdfTree } from '../../models';
 import { PdfItemComponentBase } from '../pdf-item-component-base.class';
 import { PdfItemService } from '../../services/pdf-item.service';

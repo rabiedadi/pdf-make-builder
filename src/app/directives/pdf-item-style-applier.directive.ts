@@ -47,11 +47,17 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
       element.style.borderStyle = 'solid';
     }
 
-    element.style.paddingTop = `${pt}${this.unit}`;
-    element.style.paddingBottom = `${pb}${this.unit}`;
-    element.style.paddingLeft = `${pl}${this.unit}`;
-    element.style.paddingRight = `${pr}${this.unit}`;
-
+    if ((this.pdfItem as pdfTree.ContainerElement).isParent) {
+      element.style.paddingTop = `${pt}${this.unit}`;
+      element.style.paddingBottom = `${pb}${this.unit}`;
+      element.style.paddingLeft = `${pl}${this.unit}`;
+      element.style.paddingRight = `${pr}${this.unit}`;
+    } else {
+      element.style.marginTop = `${pt}${this.unit}`;
+      element.style.marginBottom = `${pb}${this.unit}`;
+      element.style.marginLeft = `${pl}${this.unit}`;
+      element.style.marginRight = `${pr}${this.unit}`;
+    }
     if (type == pdfTree.PdfItemType.TEXT) {
       const { fontSize, bold, italics, color } = this
         .pdfItem as pdfTree.TextElement;

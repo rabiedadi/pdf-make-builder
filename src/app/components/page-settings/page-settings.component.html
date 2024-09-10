@@ -1,0 +1,65 @@
+<div
+  *ngIf="parentContainer$ | async as parentContainer"
+  class="grid gap-2 gap-y-4 my-2"
+  style="grid-template-columns: 120px auto auto"
+>
+  <!-- ------------------------------ padding ------------------------------ -->
+  <span class="col-span-1">Padding </span>
+  <div class="col-span-2 grid grid-cols-5 gap-2">
+    <div></div>
+    <input
+      type="number"
+      class="col-start-2 col-span-3 text-center"
+      [(ngModel)]="parentContainer.pt"
+    />
+    <div></div>
+
+    <input
+      type="number"
+      class="col-start-1 col-span-2 text-center"
+      [(ngModel)]="parentContainer.pl"
+    />
+    <div></div>
+
+    <input
+      type="number"
+      class="col-start-4 col-span-2 text-center"
+      [(ngModel)]="parentContainer.pr"
+    />
+    <div></div>
+
+    <input
+      type="number"
+      class="col-start-2 col-span-3 text-center"
+      [(ngModel)]="parentContainer.pb"
+    />
+    <div></div>
+  </div>
+
+  <!-- ---------------------------- header/footer ---------------------------- -->
+  <span class="col-span-1"> </span>
+  <div class="col-span-2 flex items-center gap-2">
+    <button
+      class="px-1 truncate flex-1 h-8 rounded-sm text-base"
+      [ngClass]="[
+        pdfItemService.hasHeader
+          ? 'bg-blue-300 text-white font-medium'
+          : 'bg-gray-100'
+      ]"
+      (click)="pdfItemService.hasHeader = !pdfItemService.hasHeader"
+    >
+      Header
+    </button>
+    <button
+      class="px-1 truncate flex-1 h-8 rounded-sm text-base"
+      [ngClass]="[
+        pdfItemService.hasFooter
+          ? 'bg-blue-300 text-white font-medium'
+          : 'bg-gray-100'
+      ]"
+      (click)="pdfItemService.hasFooter = !pdfItemService.hasFooter"
+    >
+      Footer
+    </button>
+  </div>
+</div>

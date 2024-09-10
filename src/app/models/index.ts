@@ -41,6 +41,11 @@ export namespace pdfTree {
   type ContainerItemSettings = {
     color?: string;
     bgColor?: string;
+    isParent?: string;
+  };
+
+  type RowItemSettings = {
+    rowType?: 'header' | 'content' | 'footer';
   };
 
   export class PdfItem {
@@ -178,9 +183,14 @@ export namespace pdfTree {
 
   /* --------------------------------- Columns -------------------------------- */
   export class RowElement extends PdfItem {
-    constructor(public cols: number[] = [6, 6], settings?: PdfItemSettings) {
-      console.log(cols);
-      super(PdfItemType.ROW, settings ?? { pt: 4, pb: 4, pr: 4, pl: 4 });
+    private _rowType: 'header' | 'content' | 'footer' | undefined;
+
+    constructor(
+      public cols: number[] = [6, 6],
+      settings?: PdfItemSettings & RowItemSettings
+    ) {
+      super(PdfItemType.ROW, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
+      this.setRowSettings(settings);
       for (let i = 0; i < cols.length; i++) {
         this.addColumn(cols[i]);
       }
@@ -189,11 +199,23 @@ export namespace pdfTree {
     columns: ContainerElement[] = [];
     verticalAlign: 'top' | 'bottom' | 'middle' = 'top';
 
+    get rowType() {
+      return this._rowType;
+    }
+    set rowType(rowType: RowItemSettings['rowType']) {
+      this._rowType = rowType;
+      this.changed$.next();
+    }
+
     get remainingCols() {
       return Math.max(
         12 - this.columns.reduce((acc, col) => acc + col.cols, 0),
         0
       );
+    }
+
+    setRowSettings(settings: RowItemSettings = {}) {
+      settings.rowType !== undefined && (this.rowType = settings.rowType);
     }
 
     addColumn(col?: number, index?: number) {
@@ -236,15 +258,14 @@ export namespace pdfTree {
     public elements: PdfItem[] = [];
     private _color: string | undefined;
     private _bgColor: string | undefined;
-
+    isParent = false;
     constructor(
       public cols = 12,
-      containerSettings?: ContainerItemSettings,
-      settings?: PdfItemSettings
+      settings?: PdfItemSettings & ContainerItemSettings
     ) {
-      super(PdfItemType.CONTAINER, settings ?? { pt: 4, pb: 4, pr: 4, pl: 4 });
-      containerSettings && this.setContainerSettings(containerSettings);
-      console.log({ cols, containerSettings });
+      super(PdfItemType.CONTAINER, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
+      this.isParent = !!settings?.isParent;
+      this.setContainerSettings(settings);
     }
 
     get color() {
@@ -262,7 +283,7 @@ export namespace pdfTree {
       this.changed$.next();
     }
 
-    setContainerSettings(settings: ContainerItemSettings) {
+    setContainerSettings(settings: ContainerItemSettings = {}) {
       settings.color !== undefined && (this._color = settings.color);
       settings.bgColor !== undefined && (this._bgColor = settings.bgColor);
     }
@@ -285,11 +306,10 @@ export namespace pdfTree {
 
     constructor(
       public content = '',
-      textSettings?: TextItemSettings,
-      settings?: PdfItemSettings
+      settings?: PdfItemSettings & TextItemSettings
     ) {
       super(PdfItemType.TEXT, settings ?? { pt: 4, pb: 4, pr: 0, pl: 0 });
-      textSettings && this.setTextSettings(textSettings);
+      this.setTextSettings(settings);
     }
 
     get fontSize() {
@@ -321,7 +341,7 @@ export namespace pdfTree {
       this.changed$.next();
     }
 
-    setTextSettings(settings: TextItemSettings) {
+    setTextSettings(settings: TextItemSettings = {}) {
       settings.fontSize !== undefined && (this.fontSize = settings.fontSize);
       settings.italics !== undefined && (this.italics = settings.italics);
       settings.color !== undefined && (this.color = settings.color);
@@ -335,9 +355,9 @@ export namespace pdfTree {
     private _width = 100;
     private _height = 100;
 
-    constructor(imageSettings?: ImageItemSettings, settings?: PdfItemSettings) {
+    constructor(settings?: PdfItemSettings & ImageItemSettings) {
       super(PdfItemType.IMAGE, settings);
-      imageSettings && this.setImageSettings(imageSettings);
+      this.setImageSettings(settings);
     }
 
     get src() {
@@ -364,7 +384,7 @@ export namespace pdfTree {
       this.changed$.next();
     }
 
-    setImageSettings(settings: ImageItemSettings) {
+    setImageSettings(settings: ImageItemSettings = {}) {
       settings.src !== undefined && (this.src = settings.src);
       settings.width !== undefined && (this.width = settings.width);
     }

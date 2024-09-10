@@ -49,11 +49,11 @@ export class PdfMakeBuilderService {
 
   private async BuildCheck(ele: pdfTree.CheckElement) {
     const checkPoint = await getDataUriFromImageUrl(
-      'https://nap-public.s3-de-central.profitbricks.com/swka_bafoeg_application_check.png'
+      'https://images.vexels.com/content/129762/preview/check-flat-icon-29a00a.png'
     );
     return {
       table: {
-        widths: [15, '*'],
+        widths: [10, '*'],
         body: [
           [
             {
@@ -76,30 +76,45 @@ export class PdfMakeBuilderService {
         ...this.bordersBuilder(ele),
         ...this.styleBuilder(ele),
       },
+      border: [false],
     };
   }
 
   private async buildContainer(ele: pdfTree.ContainerElement) {
-    const elements = await Promise.all(
-      ele.elements.map((item: pdfTree.PdfItem) => this.build(item))
-    );
-    return {
-      table: {
-        headerRows: 1,
-        widths: ['*'],
-        body: [elements],
-      },
-      ...this.marginsBuilder(ele),
-      ...this.bordersBuilder(ele),
-      ...this.styleBuilder(ele),
-    };
+    if (ele.isParent) {
+      const rows = ele.elements as unknown as pdfTree.RowElement[];
+      return {
+        version: '1.7',
+        pageSize: 'A4',
+        defaultStyle: { lineHeight: 1.3 },
+        pageMargins: [ele.pl, ele.pt, ele.pr, ele.pb],
+        header: await this.build(rows.find((r) => r.rowType === 'header')!),
+        content: await this.build(rows.find((r) => r.rowType === 'content')!),
+        footer: await this.build(rows.find((r) => r.rowType === 'footer')!),
+      };
+    } else {
+      const elements = await Promise.all(
+        ele.elements.map((item: pdfTree.PdfItem) => this.build(item))
+      );
+      return {
+        table: {
+          headerRows: 1,
+          widths: ['*'],
+          body: elements.length ? [...elements.map((e) => [e])] : [[]],
+        },
+        ...this.marginsBuilder(ele),
+        ...this.bordersBuilder(ele),
+        ...this.styleBuilder(ele),
+      };
+    }
   }
 
   private async buildRow(ele: pdfTree.RowElement) {
-    console.log(ele.cols);
     const columns = await Promise.all(
       ele.columns.map((column) => this.build(column))
     );
+    console.log(columns);
+    console.log(ele.cols);
 
     return {
       columns: ele.cols.map((col, i) => ({
@@ -152,7 +167,7 @@ export class PdfMakeBuilderService {
       case pdfTree.PdfItemType.CONTAINER: {
         const { color, bgColor } = item as pdfTree.ContainerElement;
         if (color) styles['color'] = color;
-        if (bgColor) styles['background'] = bgColor;
+        if (bgColor) styles['fillColor'] = bgColor;
         break;
       }
     }

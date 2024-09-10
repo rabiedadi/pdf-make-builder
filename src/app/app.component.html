@@ -1,12 +1,12 @@
-<div
-  style="min-width: 36cm"
-  class="p-4 flex justify-between gap-6 mx-auto bg-gray-50"
->
+<div style="min-width: 36cm" class="p-4 flex justify-between gap-6">
   <mat-tab-group
     class="flex-1 p-4"
     style="max-width: 30rem"
     animationDuration="0ms"
   >
+    <mat-tab label="Page">
+      <app-page-settings></app-page-settings>
+    </mat-tab>
     <mat-tab label="Components">
       <app-new-elements></app-new-elements>
     </mat-tab>
@@ -26,5 +26,13 @@
     ></app-pdf-container>
   </div>
 </div>
-<button (click)="build()">build</button>
-<div class="pdf-viewer" [innerHTML]="pdf"></div>
+<button
+  class="mx-auto h-11 rounded-md bg-yellow-500 px-6 text-white"
+  (click)="build()"
+>
+  Build & copy to clipboard
+</button>
+
+<div class="mx-6 mat-elevation-z3 rounded-sm p-4">
+  <pre class="text-sm">{{ docDef }}</pre>
+</div>

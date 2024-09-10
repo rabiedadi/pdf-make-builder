@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { SafeHtml } from '@angular/platform-browser';
 import { PdfItemService } from './services/pdf-item.service';
-import { PdfBuilderService } from './services/pdf-builder.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PdfMakeBuilderService } from './services/pdfmake-builder.service';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-root',
@@ -11,29 +11,26 @@ import { PdfMakeBuilderService } from './services/pdfmake-builder.service';
 })
 export class AppComponent implements OnInit {
   parentContainer$ = this.pdfItemService.parentContainer$;
-  pdf: SafeHtml = '';
+  docDef = '';
   constructor(
     private pdfItemService: PdfItemService,
     private cdr: ChangeDetectorRef,
     private pdfMakeBuilderService: PdfMakeBuilderService,
-    private pdfBuilderService: PdfBuilderService,
-    private sanitizer: DomSanitizer
+    private clipboard: Clipboard
   ) {}
 
   ngOnInit(): void {
     this.pdfItemService.init();
     this.cdr.detectChanges();
-    setTimeout(() => {
-      this.parentContainer$.value!.bgColor = '#ff0000';
-    }, 5000);
   }
 
   build() {
-    this.pdf = this.sanitizer.bypassSecurityTrustHtml(
-      this.pdfBuilderService.build(this.parentContainer$.value!)
-    );
     this.pdfMakeBuilderService
       .build(this.parentContainer$.value!)
-      .then(console.log);
+      .then((dd) => {
+        this.docDef = JSON.stringify(dd, undefined, '\t');
+        this.clipboard.copy(this.docDef);
+        console.log('done');
+      });
   }
 }

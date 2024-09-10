@@ -1,4 +1,4 @@
-<div class="flex items-center gap-2 w-fit">
+<div class="flex items-center gap-2 w-fit" [PdfItemStyleApplier]="control">
   <div
     class="checkbox h-6 w-6"
     [ngClass]="!control.value ? 'checked' : 'indeterminate'"

@@ -1,3 +1,8 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 .pdf-viewer {
   min-width: 21cm;
   max-width: 21cm;

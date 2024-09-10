@@ -28,7 +28,9 @@ export class PdfContainerComponent implements OnInit, AfterViewInit {
   focusedElement = this.pdfItemService.focusedElement$;
 
   allowDropPredicate = (drag: CdkDrag, drop: CdkDropList) => {
-    return this.dragDropService.isDropAllowed(drag, drop);
+    return this.container.isParent
+      ? false
+      : this.dragDropService.isDropAllowed(drag, drop);
   };
 
   public get connectedLists() {
@@ -41,6 +43,14 @@ export class PdfContainerComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {}
+
+  get hasHeader() {
+    return this.container.isParent && this.pdfItemService.hasHeader;
+  }
+
+  get hasFooter() {
+    return this.container.isParent && this.pdfItemService.hasFooter;
+  }
 
   ngAfterViewInit(): void {
     if (this.dropList) {

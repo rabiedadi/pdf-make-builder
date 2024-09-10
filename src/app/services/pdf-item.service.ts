@@ -11,13 +11,10 @@ export class PdfItemService {
   parentContainer$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
     undefined
   );
-  Header$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
-    undefined
-  );
-  footer$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
-    undefined
-  );
   focusedElement$ = new BehaviorSubject<pdfTree.PdfItem | undefined>(undefined);
+
+  hasHeader = true;
+  hasFooter = true;
 
   public pdfItems: { [key in pdfTree.PdfItemType]: PdfElementConstructor } = {
     text: pdfTree.TextElement,
@@ -29,20 +26,25 @@ export class PdfItemService {
 
   init() {
     this.parentContainer$.next(
-      this.createPdfItem(
-        pdfTree.PdfItemType.CONTAINER,
-        12, // cols
-        {}, // containerSettings
-        {
-          pt: 20,
-          pb: 20,
-          pr: 20,
-          pl: 20,
-        }
-      )
+      this.createPdfItem(pdfTree.PdfItemType.CONTAINER, 12, {
+        pt: 35,
+        pr: 20,
+        pb: 35,
+        pl: 20,
+        isParent: true,
+      })
     );
-    this.Header$.next(this.createPdfItem(pdfTree.PdfItemType.CONTAINER));
-    this.footer$.next(this.createPdfItem(pdfTree.PdfItemType.CONTAINER));
+    this.parentContainer$.value!.elements.push(
+      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+        rowType: 'header',
+      }),
+      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+        rowType: 'content',
+      }),
+      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+        rowType: 'footer',
+      })
+    );
   }
 
   public createPdfItem<T = pdfTree.PdfItem>(

@@ -8,10 +8,10 @@
     height: 100%;
     transform: translateX(-50%);
     &:hover {
-      border: 2px solid #0b95ffad;
+      outline: 2px solid #0b95ffad;
     }
     &.focused {
-      border: 2px solid #0b96ff;
+      outline: 2px solid #0b96ff;
     }
   }
 
