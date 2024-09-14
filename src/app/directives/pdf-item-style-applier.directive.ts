@@ -1,21 +1,19 @@
-import {
-  Directive,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
-import { pdfTree } from '../models';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import {
+  PdfItem,
+  ContainerElement,
+  PdfItemType,
+  TextElement,
+  ImageElement,
+} from '../models';
 
 @Directive({
   selector: '[PdfItemStyleApplier]',
 })
 export class PdfItemStyleApplier implements OnInit, OnDestroy {
   @Input({ required: true, alias: 'PdfItemStyleApplier' })
-  pdfItem!: pdfTree.PdfItem;
+  pdfItem!: PdfItem;
   subscription!: Subscription;
   unit = 'pt';
   constructor(private el: ElementRef) {}
@@ -47,7 +45,7 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
       element.style.borderStyle = 'solid';
     }
 
-    if ((this.pdfItem as pdfTree.ContainerElement).isParent) {
+    if ((this.pdfItem as ContainerElement).isParent) {
       element.style.paddingTop = `${pt}${this.unit}`;
       element.style.paddingBottom = `${pb}${this.unit}`;
       element.style.paddingLeft = `${pl}${this.unit}`;
@@ -58,29 +56,28 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
       element.style.marginLeft = `${pl}${this.unit}`;
       element.style.marginRight = `${pr}${this.unit}`;
     }
-    if (type == pdfTree.PdfItemType.TEXT) {
-      const { fontSize, bold, italics, color } = this
-        .pdfItem as pdfTree.TextElement;
+    if (type == PdfItemType.TEXT) {
+      const { fontSize, bold, italics, color } = this.pdfItem as TextElement;
       element.style.fontSize = `${fontSize}${this.unit}`;
       element.style.fontWeight = bold ? '500' : '400';
       element.style.fontStyle = italics ? 'italic' : '';
       element.style.color = `${color}`;
     }
 
-    if (type == pdfTree.PdfItemType.CONTAINER) {
-      const { color, bgColor } = this.pdfItem as pdfTree.ContainerElement;
+    if (type == PdfItemType.CONTAINER) {
+      const { color, bgColor } = this.pdfItem as ContainerElement;
       element.style.color = `${color}`;
       element.style.backgroundColor = `${bgColor}`;
     }
 
-    if (type == pdfTree.PdfItemType.IMAGE) {
-      const { width, height, src } = this.pdfItem as pdfTree.ImageElement;
+    if (type == PdfItemType.IMAGE) {
+      const { width, height, src } = this.pdfItem as ImageElement;
       element.style.width = `${width}${this.unit}`;
       element.style.height = `${height}${this.unit}`;
       element.style.backgroundImage = src ? `url(${src})` : '';
     }
 
-    if (type == pdfTree.PdfItemType.CHECK) {
+    if (type == PdfItemType.CHECK) {
     }
   }
 }

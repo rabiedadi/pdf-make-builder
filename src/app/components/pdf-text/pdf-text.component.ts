@@ -1,12 +1,11 @@
 import {
   AfterViewChecked,
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   ViewChild,
 } from '@angular/core';
-import { pdfTree } from '../../models';
+import { TextElement } from '../../models';
 import { PdfItemComponentBase } from '../pdf-item-component-base.class';
 
 @Component({
@@ -15,7 +14,7 @@ import { PdfItemComponentBase } from '../pdf-item-component-base.class';
   styleUrls: ['./pdf-text.component.scss'],
 })
 export class PdfTextComponent
-  extends PdfItemComponentBase<pdfTree.TextElement>
+  extends PdfItemComponentBase<TextElement>
   implements AfterViewInit, AfterViewChecked
 {
   @ViewChild('editable') editable!: ElementRef<HTMLDivElement>;

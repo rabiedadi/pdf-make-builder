@@ -1,28 +1,36 @@
 import { Injectable } from '@angular/core';
-import { pdfTree } from '../models';
 import { getDataUriFromImageUrl } from '../helpers/getDataUriFromImageUrl';
+import {
+  PdfItem,
+  PdfItemType,
+  ContainerElement,
+  RowElement,
+  ImageElement,
+  TextElement,
+  CheckElement,
+} from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class PdfMakeBuilderService {
   unit = 'pt';
-  async build(item: pdfTree.PdfItem): Promise<Object> {
+  async build(item: PdfItem): Promise<Object> {
     switch (item.type) {
-      case pdfTree.PdfItemType.CONTAINER:
-        return this.buildContainer(item as pdfTree.ContainerElement);
-      case pdfTree.PdfItemType.ROW:
-        return this.buildRow(item as pdfTree.RowElement);
-      case pdfTree.PdfItemType.IMAGE:
-        return this.BuildImage(item as pdfTree.ImageElement);
-      case pdfTree.PdfItemType.TEXT:
-        return this.BuildText(item as pdfTree.TextElement);
-      case pdfTree.PdfItemType.CHECK:
-        return this.BuildCheck(item as pdfTree.CheckElement);
+      case PdfItemType.CONTAINER:
+        return this.buildContainer(item as ContainerElement);
+      case PdfItemType.ROW:
+        return this.buildRow(item as RowElement);
+      case PdfItemType.IMAGE:
+        return this.BuildImage(item as ImageElement);
+      case PdfItemType.TEXT:
+        return this.BuildText(item as TextElement);
+      case PdfItemType.CHECK:
+        return this.BuildCheck(item as CheckElement);
       default:
         return {};
     }
   }
 
-  private async BuildImage(ele: pdfTree.ImageElement) {
+  private async BuildImage(ele: ImageElement) {
     const uri = await getDataUriFromImageUrl(ele.src);
     return {
       image: uri,
@@ -38,7 +46,7 @@ export class PdfMakeBuilderService {
     };
   }
 
-  private async BuildText(ele: pdfTree.TextElement) {
+  private async BuildText(ele: TextElement) {
     return {
       text: ele.content,
       ...this.marginsBuilder(ele),
@@ -47,7 +55,7 @@ export class PdfMakeBuilderService {
     };
   }
 
-  private async BuildCheck(ele: pdfTree.CheckElement) {
+  private async BuildCheck(ele: CheckElement) {
     const checkPoint = await getDataUriFromImageUrl(
       'https://images.vexels.com/content/129762/preview/check-flat-icon-29a00a.png'
     );
@@ -80,9 +88,9 @@ export class PdfMakeBuilderService {
     };
   }
 
-  private async buildContainer(ele: pdfTree.ContainerElement) {
+  private async buildContainer(ele: ContainerElement) {
     if (ele.isParent) {
-      const rows = ele.elements as unknown as pdfTree.RowElement[];
+      const rows = ele.elements as unknown as RowElement[];
       return {
         version: '1.7',
         pageSize: 'A4',
@@ -94,7 +102,7 @@ export class PdfMakeBuilderService {
       };
     } else {
       const elements = await Promise.all(
-        ele.elements.map((item: pdfTree.PdfItem) => this.build(item))
+        ele.elements.map((item: PdfItem) => this.build(item))
       );
       return {
         table: {
@@ -109,7 +117,7 @@ export class PdfMakeBuilderService {
     }
   }
 
-  private async buildRow(ele: pdfTree.RowElement) {
+  private async buildRow(ele: RowElement) {
     const columns = await Promise.all(
       ele.columns.map((column) => this.build(column))
     );
@@ -128,7 +136,7 @@ export class PdfMakeBuilderService {
     };
   }
 
-  private marginsBuilder({ pl, pt, pr, pb }: pdfTree.PdfItem) {
+  private marginsBuilder({ pl, pt, pr, pb }: PdfItem) {
     return {
       margin:
         pl == pt && pt == pr && pr == pb
@@ -139,7 +147,7 @@ export class PdfMakeBuilderService {
     };
   }
 
-  private bordersBuilder({ bl, bt, br, bb, bColor }: pdfTree.PdfItem) {
+  private bordersBuilder({ bl, bt, br, bb, bColor }: PdfItem) {
     return bl || bt || br || bb
       ? {
           border: [!!bl, !!bt, !!br, !!bb],
@@ -148,24 +156,24 @@ export class PdfMakeBuilderService {
       : { border: [false] };
   }
 
-  private styleBuilder(item: pdfTree.PdfItem) {
+  private styleBuilder(item: PdfItem) {
     const styles: any = {};
 
     switch (item.type) {
-      case pdfTree.PdfItemType.TEXT:
-        const { fontSize, bold, italics, color } = item as pdfTree.TextElement;
+      case PdfItemType.TEXT:
+        const { fontSize, bold, italics, color } = item as TextElement;
         if (color) styles['color'] = color;
         if (fontSize) styles['fontSize'] = fontSize;
         if (bold) styles['bold'] = true;
         if (italics) styles['italics'] = true;
         break;
 
-      case pdfTree.PdfItemType.IMAGE: {
+      case PdfItemType.IMAGE: {
         break;
       }
 
-      case pdfTree.PdfItemType.CONTAINER: {
-        const { color, bgColor } = item as pdfTree.ContainerElement;
+      case PdfItemType.CONTAINER: {
+        const { color, bgColor } = item as ContainerElement;
         if (color) styles['color'] = color;
         if (bgColor) styles['fillColor'] = bgColor;
         break;

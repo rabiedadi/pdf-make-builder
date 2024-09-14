@@ -1,7 +1,7 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-import { pdfTree } from '../../models';
-import { PdfItemComponentBase } from '../pdf-item-component-base.class';
+import { Component, OnInit } from '@angular/core';
 import { PdfItemService } from '../../services/pdf-item.service';
+import { PdfItemComponentBase } from '../pdf-item-component-base.class';
+import { PdfItem, RowElement } from '../../models';
 
 @Component({
   selector: 'app-pdf-row',
@@ -9,7 +9,7 @@ import { PdfItemService } from '../../services/pdf-item.service';
   styleUrls: ['./pdf-row.component.scss'],
 })
 export class PdfRowsComponent
-  extends PdfItemComponentBase<pdfTree.RowElement>
+  extends PdfItemComponentBase<RowElement>
   implements OnInit
 {
   focusedElement = this.pdfItemService.focusedElement$;
@@ -19,7 +19,7 @@ export class PdfRowsComponent
 
   ngOnInit(): void {}
 
-  setFocusedElement(element: pdfTree.PdfItem) {
+  setFocusedElement(element: PdfItem) {
     this.pdfItemService.focusedElement$.next(element);
   }
 }

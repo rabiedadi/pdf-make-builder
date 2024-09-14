@@ -1,32 +1,40 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { pdfTree } from '../models';
+import {
+  PdfItem,
+  ContainerElement,
+  PdfItemType,
+  TextElement,
+  CheckElement,
+  ImageElement,
+  RowElement,
+} from '../models';
 
 interface PdfElementConstructor {
-  new (...data: any): pdfTree.PdfItem;
+  new (...data: any): PdfItem;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PdfItemService {
-  parentContainer$ = new BehaviorSubject<pdfTree.ContainerElement | undefined>(
+  parentContainer$ = new BehaviorSubject<ContainerElement | undefined>(
     undefined
   );
-  focusedElement$ = new BehaviorSubject<pdfTree.PdfItem | undefined>(undefined);
+  focusedElement$ = new BehaviorSubject<PdfItem | undefined>(undefined);
 
   hasHeader = true;
   hasFooter = true;
 
-  public pdfItems: { [key in pdfTree.PdfItemType]: PdfElementConstructor } = {
-    text: pdfTree.TextElement,
-    check: pdfTree.CheckElement,
-    image: pdfTree.ImageElement,
-    container: pdfTree.ContainerElement,
-    row: pdfTree.RowElement,
+  public pdfItems: { [key in PdfItemType]: PdfElementConstructor } = {
+    text: TextElement,
+    check: CheckElement,
+    image: ImageElement,
+    container: ContainerElement,
+    row: RowElement,
   };
 
   init() {
     this.parentContainer$.next(
-      this.createPdfItem(pdfTree.PdfItemType.CONTAINER, 12, {
+      this.createPdfItem(PdfItemType.CONTAINER, 12, {
         pt: 35,
         pr: 20,
         pb: 35,
@@ -35,22 +43,19 @@ export class PdfItemService {
       })
     );
     this.parentContainer$.value!.elements.push(
-      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+      this.createPdfItem(PdfItemType.ROW, [12], {
         rowType: 'header',
       }),
-      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+      this.createPdfItem(PdfItemType.ROW, [12], {
         rowType: 'content',
       }),
-      this.createPdfItem(pdfTree.PdfItemType.ROW, [12], {
+      this.createPdfItem(PdfItemType.ROW, [12], {
         rowType: 'footer',
       })
     );
   }
 
-  public createPdfItem<T = pdfTree.PdfItem>(
-    type: pdfTree.PdfItemType,
-    ...data: any
-  ): T {
+  public createPdfItem<T = PdfItem>(type: PdfItemType, ...data: any): T {
     return new this.pdfItems[type](...(data as any)) as T;
   }
 }

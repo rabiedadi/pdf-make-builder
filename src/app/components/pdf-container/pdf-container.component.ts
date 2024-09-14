@@ -12,9 +12,9 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { pdfTree } from '../../models';
 import { PdfItemService } from '../../services/pdf-item.service';
 import { DragDropService } from '../../services/drag-drop.service';
+import { ContainerElement, PdfItem } from '../../models';
 
 @Component({
   selector: 'app-pdf-container',
@@ -23,7 +23,7 @@ import { DragDropService } from '../../services/drag-drop.service';
 })
 export class PdfContainerComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) dropList?: CdkDropList;
-  @Input({ required: true }) container!: pdfTree.ContainerElement;
+  @Input({ required: true }) container!: ContainerElement;
   @Input() showOutline: boolean = true;
   focusedElement = this.pdfItemService.focusedElement$;
 
@@ -57,11 +57,11 @@ export class PdfContainerComponent implements OnInit, AfterViewInit {
       this.dragDropService.register(this.dropList);
     }
   }
-  dropped(event: CdkDragDrop<pdfTree.PdfItem[]>) {
+  dropped(event: CdkDragDrop<PdfItem[]>) {
     this.dragDropService.drop(event);
   }
 
-  dragMoved(event: CdkDragMove<pdfTree.PdfItem>) {
+  dragMoved(event: CdkDragMove<PdfItem>) {
     this.dragDropService.dragMoved(event);
   }
 
@@ -69,7 +69,7 @@ export class PdfContainerComponent implements OnInit, AfterViewInit {
     this.dragDropService.dragReleased(event);
   }
 
-  setFocusedElement(element: pdfTree.PdfItem) {
+  setFocusedElement(element: PdfItem) {
     this.pdfItemService.focusedElement$.next(element);
   }
 }

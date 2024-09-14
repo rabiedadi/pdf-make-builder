@@ -1,6 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { firstValueFrom, Subscription } from 'rxjs';
-import { pdfTree } from '../../models';
 import { PdfItemService } from '../../services/pdf-item.service';
 
 @Component({

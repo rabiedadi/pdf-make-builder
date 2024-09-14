@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { DragDropService } from '../../services/drag-drop.service';
 import { PdfItemService } from '../../services/pdf-item.service';
-import { pdfTree } from '../../models';
+import { dragPdfItem, PdfItemType, RowElement, PdfItem } from '../../models';
 
 @Component({
   selector: 'app-new-elements',
@@ -24,7 +24,7 @@ export class NewElementsComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) dropList?: CdkDropList;
   @Input() type: 'components' | 'rows' = 'components';
 
-  public items: pdfTree.dragPdfItem[] = [];
+  public items: dragPdfItem[] = [];
   public get connectedLists() {
     return this.dragDropService.dropLists;
   }
@@ -36,21 +36,21 @@ export class NewElementsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     if (this.type == 'components') {
       for (const [type, Item] of Object.entries(this.pdfItemService.pdfItems)) {
-        ![pdfTree.PdfItemType.CONTAINER, pdfTree.PdfItemType.ROW].includes(
-          type as pdfTree.PdfItemType
+        ![PdfItemType.CONTAINER, PdfItemType.ROW].includes(
+          type as PdfItemType
         ) && this.items.push(new Item());
       }
     }
     if (this.type == 'rows') {
-      this.items.push(new pdfTree.RowElement([12]));
-      this.items.push(new pdfTree.RowElement([3, 9]));
-      this.items.push(new pdfTree.RowElement([4, 8]));
-      this.items.push(new pdfTree.RowElement([6, 6]));
-      this.items.push(new pdfTree.RowElement([9, 3]));
-      this.items.push(new pdfTree.RowElement([4, 4, 4]));
-      this.items.push(new pdfTree.RowElement([4, 6, 2]));
-      this.items.push(new pdfTree.RowElement([3, 3, 3, 3]));
-      this.items.push(new pdfTree.RowElement([2, 2, 2, 2, 2, 2]));
+      this.items.push(new RowElement([12]));
+      this.items.push(new RowElement([3, 9]));
+      this.items.push(new RowElement([4, 8]));
+      this.items.push(new RowElement([6, 6]));
+      this.items.push(new RowElement([9, 3]));
+      this.items.push(new RowElement([4, 4, 4]));
+      this.items.push(new RowElement([4, 6, 2]));
+      this.items.push(new RowElement([3, 3, 3, 3]));
+      this.items.push(new RowElement([2, 2, 2, 2, 2, 2]));
     }
   }
 
@@ -72,7 +72,7 @@ export class NewElementsComponent implements OnInit, AfterViewInit {
     this.removeItemClone();
   }
 
-  dragMoved(event: CdkDragMove<pdfTree.PdfItem>) {
+  dragMoved(event: CdkDragMove<PdfItem>) {
     this.dragDropService.dragMoved(event);
   }
 

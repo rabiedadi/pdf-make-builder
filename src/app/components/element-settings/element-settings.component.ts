@@ -1,7 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { firstValueFrom, Subscription } from 'rxjs';
-import { pdfTree } from '../../models';
 import { PdfItemService } from '../../services/pdf-item.service';
+import {
+  PdfItem,
+  ContainerElement,
+  PdfItemType,
+  RowElement,
+} from '../../models';
 
 @Component({
   selector: 'app-element-settings',
@@ -9,8 +14,8 @@ import { PdfItemService } from '../../services/pdf-item.service';
   styleUrls: ['./element-settings.component.scss'],
 })
 export class ElementSettingsComponent implements OnInit, OnDestroy {
-  selectedElement: pdfTree.PdfItem | undefined;
-  selectedContainer: pdfTree.ContainerElement | undefined;
+  selectedElement: PdfItem | undefined;
+  selectedContainer: ContainerElement | undefined;
   subscription: Subscription | undefined;
 
   constructor(private pdfItemService: PdfItemService) {}
@@ -28,19 +33,19 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
     );
   }
 
-  getElementRecursive(element: pdfTree.PdfItem, uId: string) {
+  getElementRecursive(element: PdfItem, uId: string) {
     if (element.uId === uId) {
       this.selectedElement = element;
       this.selectedContainer = undefined;
       return;
     }
-    if (element.type === pdfTree.PdfItemType.ROW) {
-      (element as pdfTree.RowElement).columns.forEach((col) => {
+    if (element.type === PdfItemType.ROW) {
+      (element as RowElement).columns.forEach((col) => {
         this.getElementRecursive(col, uId);
       });
     }
-    if (element.type === pdfTree.PdfItemType.CONTAINER) {
-      (element as pdfTree.ContainerElement).elements.forEach((ele) => {
+    if (element.type === PdfItemType.CONTAINER) {
+      (element as ContainerElement).elements.forEach((ele) => {
         this.getElementRecursive(ele, uId);
       });
     }
@@ -50,31 +55,31 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
     this.delElementRecursive(this.pdfItemService.parentContainer$.value!, uId);
   }
 
-  delElementRecursive(element: pdfTree.PdfItem, uId: string) {
-    if (element.type === pdfTree.PdfItemType.ROW) {
-      const index = (element as pdfTree.RowElement).columns.findIndex(
+  delElementRecursive(element: PdfItem, uId: string) {
+    if (element.type === PdfItemType.ROW) {
+      const index = (element as RowElement).columns.findIndex(
         (c) => c.uId === uId
       );
       if (index > -1) {
-        (element as pdfTree.RowElement).cols.splice(index, 1);
-        (element as pdfTree.RowElement).columns.splice(index, 1);
+        (element as RowElement).cols.splice(index, 1);
+        (element as RowElement).columns.splice(index, 1);
         this.selectedContainer = undefined;
       } else {
-        (element as pdfTree.RowElement).columns.forEach((col) => {
+        (element as RowElement).columns.forEach((col) => {
           this.delElementRecursive(col, uId);
         });
       }
     }
-    if (element.type === pdfTree.PdfItemType.CONTAINER) {
-      const index = (element as pdfTree.ContainerElement).elements.findIndex(
+    if (element.type === PdfItemType.CONTAINER) {
+      const index = (element as ContainerElement).elements.findIndex(
         (c) => c.uId === uId
       );
       if (index > -1) {
-        (element as pdfTree.ContainerElement).elements.splice(index, 1);
+        (element as ContainerElement).elements.splice(index, 1);
         this.selectedElement = undefined;
         this.selectedContainer = undefined;
       } else {
-        (element as pdfTree.ContainerElement).elements.forEach((col) => {
+        (element as ContainerElement).elements.forEach((col) => {
           this.delElementRecursive(col, uId);
         });
       }

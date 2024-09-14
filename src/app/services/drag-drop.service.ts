@@ -10,14 +10,14 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { pdfTree } from '../models';
 import { PdfItemService } from './pdf-item.service';
+import { PdfItem } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class DragDropService {
   dropLists: CdkDropList[] = [];
   currentHoverDropListId?: string;
-  controlDropped: Subject<pdfTree.PdfItem> = new Subject<pdfTree.PdfItem>();
+  controlDropped: Subject<PdfItem> = new Subject<PdfItem>();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -28,7 +28,7 @@ export class DragDropService {
     this.dropLists.push(dropList);
   }
 
-  dragMoved(event: CdkDragMove<pdfTree.PdfItem>) {
+  dragMoved(event: CdkDragMove<PdfItem>) {
     let elementFromPoint = this.document.elementFromPoint(
       event.pointerPosition.x,
       event.pointerPosition.y
@@ -64,7 +64,7 @@ export class DragDropService {
     return drop.id === this.currentHoverDropListId;
   }
 
-  drop(event: CdkDragDrop<pdfTree.PdfItem[]>) {
+  drop(event: CdkDragDrop<PdfItem[]>) {
     if (event.previousContainer.id !== 'toolbox') {
       if (event.previousContainer == event.container) {
         moveItemInArray(
@@ -83,7 +83,7 @@ export class DragDropService {
 
       this.controlDropped.next(event.item.data);
     } else {
-      let sourceElement = <pdfTree.PdfItem>event.item.data;
+      let sourceElement = <PdfItem>event.item.data;
       let element = sourceElement.clone();
 
       event.container.data.splice(event.currentIndex, 0, element);
