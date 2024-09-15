@@ -6,7 +6,7 @@ type TextItemSettings = {
   bold?: boolean;
   italics?: boolean;
   color?: string;
-};
+} & PdfItemSettings;
 
 export class TextElement extends PdfItem {
   private _fontSize = 12;
@@ -14,10 +14,7 @@ export class TextElement extends PdfItem {
   private _italics = false;
   private _color = '#484848';
 
-  constructor(
-    public content = '',
-    settings?: PdfItemSettings & TextItemSettings
-  ) {
+  constructor(public content = '', settings?: TextItemSettings) {
     super(PdfItemType.TEXT, settings ?? { pt: 4, pb: 4, pr: 0, pl: 0 });
     this.setTextSettings(settings);
   }
@@ -51,6 +48,16 @@ export class TextElement extends PdfItem {
     this.changed$.next();
   }
 
+  get settings(): TextItemSettings {
+    return {
+      ...this.parentSettings,
+      fontSize: this.fontSize,
+      italics: this.italics,
+      color: this.color,
+      bold: this.bold,
+    };
+  }
+
   setTextSettings(settings: TextItemSettings = {}) {
     settings.fontSize !== undefined && (this.fontSize = settings.fontSize);
     settings.italics !== undefined && (this.italics = settings.italics);
@@ -58,9 +65,16 @@ export class TextElement extends PdfItem {
     settings.bold !== undefined && (this.bold = settings.bold);
   }
 
-  override clone(): TextElement {
-    return Object.assign(new TextElement(), {
+  override clone(deep?: boolean): TextElement {
+    const clone = Object.assign(new TextElement(), {
       uId: uuid(),
     });
+    if (deep) {
+      Object.assign(clone, {
+        ...this.settings,
+        content: this.content,
+      });
+    }
+    return clone;
   }
 }

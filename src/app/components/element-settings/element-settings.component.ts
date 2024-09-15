@@ -56,34 +56,77 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
   }
 
   delElementRecursive(element: PdfItem, uId: string) {
-    if (element.type === PdfItemType.ROW) {
-      const index = (element as RowElement).columns.findIndex(
-        (c) => c.uId === uId
-      );
+    if (this.isRowElement(element)) {
+      const index = element.columns.findIndex((c) => c.uId === uId);
       if (index > -1) {
-        (element as RowElement).cols.splice(index, 1);
-        (element as RowElement).columns.splice(index, 1);
+        element.cols.splice(index, 1);
+        element.columns.splice(index, 1);
         this.selectedContainer = undefined;
       } else {
-        (element as RowElement).columns.forEach((col) => {
+        element.columns.forEach((col) => {
           this.delElementRecursive(col, uId);
         });
       }
     }
-    if (element.type === PdfItemType.CONTAINER) {
-      const index = (element as ContainerElement).elements.findIndex(
-        (c) => c.uId === uId
-      );
+    if (this.isContainerElement(element)) {
+      const index = element.elements.findIndex((c) => c.uId === uId);
       if (index > -1) {
-        (element as ContainerElement).elements.splice(index, 1);
+        if (element.isParent) {
+          return;
+        }
+        element.elements.splice(index, 1);
         this.selectedElement = undefined;
         this.selectedContainer = undefined;
       } else {
-        (element as ContainerElement).elements.forEach((col) => {
+        element.elements.forEach((col) => {
           this.delElementRecursive(col, uId);
         });
       }
     }
+  }
+
+  cloneElement(uId: string) {
+    this.cloneElementRecursive(
+      this.pdfItemService.parentContainer$.value!,
+      uId
+    );
+  }
+
+  cloneElementRecursive(element: PdfItem, uId: string) {
+    if (this.isRowElement(element)) {
+      const index = element.columns.findIndex((c) => c.uId === uId);
+      if (index > -1) {
+        const clone = element.columns[index].clone(true);
+        element.cols.splice(index, 0, (clone as ContainerElement).cols);
+        element.columns.splice(index, 0, clone);
+      } else {
+        element.columns.forEach((col) => {
+          this.cloneElementRecursive(col, uId);
+        });
+      }
+    }
+    if (this.isContainerElement(element)) {
+      const index = element.elements.findIndex((c) => c.uId === uId);
+      if (index > -1) {
+        if (element.isParent) {
+          return;
+        }
+        const clone = element.elements[index].clone(true);
+        element.elements.splice(index, 0, clone);
+      } else {
+        element.elements.forEach((col) => {
+          this.cloneElementRecursive(col, uId);
+        });
+      }
+    }
+  }
+
+  isRowElement(element: PdfItem): element is RowElement {
+    return element.type === PdfItemType.ROW;
+  }
+
+  isContainerElement(element: PdfItem): element is ContainerElement {
+    return element.type === PdfItemType.CONTAINER;
   }
 
   ngOnDestroy(): void {

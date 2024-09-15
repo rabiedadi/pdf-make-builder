@@ -4,14 +4,15 @@ import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 type ImageItemSettings = {
   src?: string;
   width?: number;
-};
+  height?: number;
+} & PdfItemSettings;
 
 export class ImageElement extends PdfItem {
   private _src = '';
   private _width = 100;
   private _height = 100;
 
-  constructor(settings?: PdfItemSettings & ImageItemSettings) {
+  constructor(settings?: ImageItemSettings) {
     super(PdfItemType.IMAGE, settings);
     this.setImageSettings(settings);
   }
@@ -40,14 +41,27 @@ export class ImageElement extends PdfItem {
     this.changed$.next();
   }
 
+  get settings(): ImageItemSettings {
+    return {
+      ...this.parentSettings,
+      src: this.src,
+      width: this.width,
+    };
+  }
+
   setImageSettings(settings: ImageItemSettings = {}) {
     settings.src !== undefined && (this.src = settings.src);
     settings.width !== undefined && (this.width = settings.width);
+    settings.height !== undefined && (this.height = settings.height);
   }
 
-  override clone(): ImageElement {
-    return Object.assign(new ImageElement(), {
+  override clone(deep?: boolean): ImageElement {
+    const clone = Object.assign(new ImageElement(), {
       uId: uuid(),
     });
+    if (deep) {
+      Object.assign(clone, this.settings);
+    }
+    return clone;
   }
 }

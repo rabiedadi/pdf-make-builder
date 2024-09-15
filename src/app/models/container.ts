@@ -4,20 +4,16 @@ import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 type ContainerItemSettings = {
   color?: string;
   bgColor?: string;
-  isParent?: string;
-};
+} & PdfItemSettings;
 
 export class ContainerElement extends PdfItem {
   public elements: PdfItem[] = [];
   private _color: string | undefined;
   private _bgColor: string | undefined;
   isParent = false;
-  constructor(
-    public cols = 12,
-    settings?: PdfItemSettings & ContainerItemSettings
-  ) {
+
+  constructor(public cols = 12, settings?: ContainerItemSettings) {
     super(PdfItemType.CONTAINER, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
-    this.isParent = !!settings?.isParent;
     this.setContainerSettings(settings);
   }
 
@@ -28,6 +24,7 @@ export class ContainerElement extends PdfItem {
     this._color = v;
     this.changed$.next();
   }
+
   get bgColor() {
     return this._bgColor;
   }
@@ -36,16 +33,29 @@ export class ContainerElement extends PdfItem {
     this.changed$.next();
   }
 
+  get settings(): ContainerItemSettings {
+    return {
+      ...this.parentSettings,
+      color: this.color,
+      bgColor: this.bgColor,
+    };
+  }
+
   setContainerSettings(settings: ContainerItemSettings = {}) {
     settings.color !== undefined && (this._color = settings.color);
     settings.bgColor !== undefined && (this._bgColor = settings.bgColor);
   }
 
-  override clone(): ContainerElement {
-    const { elements, ...rest } = this;
-    return Object.assign(new ContainerElement(), {
-      ...rest,
+  override clone(deep?: boolean): ContainerElement {
+    const clone = Object.assign(new ContainerElement(), {
       uId: uuid(),
     });
+    if (deep) {
+      Object.assign<ContainerElement, Partial<ContainerElement>>(clone, {
+        ...this.settings,
+        elements: this.elements.map((e) => e.clone(true)),
+      });
+    }
+    return clone;
   }
 }

@@ -1,13 +1,20 @@
 <ng-container *ngIf="selectedElement">
   <div
-    class="grid gap-2 gap-y-4 my-2"
+    class="grid gap-2 gap-y-4 my-8"
     style="grid-template-columns: 120px auto auto"
   >
     <!-- -------------------------------- delet -------------------------------- -->
-    <span class="col-span-1">Delete</span>
-    <div class="col-span-2 flex justify-center">
+    <span class="col-span-1"></span>
+    <div class="col-span-1 flex justify-center">
       <mat-icon class="cursor-pointer" (click)="delElement(selectedElement.uId)"
-        >delete</mat-icon
+        >delete_outline</mat-icon
+      >
+    </div>
+    <div class="col-span-1 flex justify-center">
+      <mat-icon
+        class="cursor-pointer"
+        (click)="cloneElement(selectedElement.uId)"
+        >copy_all</mat-icon
       >
     </div>
     <!-- ------------------------------- Border -------------------------------- -->

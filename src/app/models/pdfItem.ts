@@ -102,6 +102,20 @@ export class PdfItem {
     this.changed$.next();
   }
 
+  get parentSettings(): PdfItemSettings {
+    return {
+      pt: this.pt,
+      pb: this.pb,
+      pl: this.pl,
+      pr: this.pr,
+      bt: this.bt,
+      bb: this.bb,
+      bl: this.bl,
+      br: this.br,
+      bColor: this.bColor,
+    };
+  }
+
   readonly iconName: string;
 
   private iconsMap: { [key in PdfItemType]: string } = {
@@ -130,7 +144,7 @@ export class PdfItem {
     settings.pr != undefined && (this.pr = settings.pr);
   }
 
-  clone(): PdfItem {
+  clone(deep?: boolean): PdfItem {
     throw new Error("Method 'clone()' not implemented");
   }
 }

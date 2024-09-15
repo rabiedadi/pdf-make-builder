@@ -39,9 +39,9 @@ export class PdfItemService {
         pr: 20,
         pb: 35,
         pl: 20,
-        isParent: true,
       })
     );
+    this.parentContainer$.value!.isParent = true;
     this.parentContainer$.value!.elements.push(
       this.createPdfItem(PdfItemType.ROW, [12], {
         rowType: 'header',

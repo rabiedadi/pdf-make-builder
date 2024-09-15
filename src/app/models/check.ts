@@ -1,5 +1,7 @@
 import { uuid } from '../helpers';
-import { PdfItem, PdfItemType } from './pdfItem';
+import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
+
+type CheckItemSettings = {} & PdfItemSettings;
 
 export class CheckElement extends PdfItem {
   private _content = '';
@@ -28,9 +30,22 @@ export class CheckElement extends PdfItem {
     this.changed$.next();
   }
 
-  override clone(): CheckElement {
-    return Object.assign(new CheckElement(), {
+  get settings(): CheckItemSettings {
+    return {
+      ...this.parentSettings,
+    };
+  }
+  override clone(deep?: boolean): CheckElement {
+    const clone = Object.assign(new CheckElement(), {
       uId: uuid(),
     });
+    if (deep) {
+      Object.assign(clone, {
+        ...this.settings,
+        value: this.value,
+        content: this.content,
+      });
+    }
+    return clone;
   }
 }
