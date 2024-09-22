@@ -1,7 +1,7 @@
 import { uuid } from '../helpers';
 import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 
-type ImageItemSettings = {
+export type ImageItemSettings = {
   src?: string;
   width?: number;
   height?: number;
@@ -9,8 +9,8 @@ type ImageItemSettings = {
 
 export class ImageElement extends PdfItem {
   private _src = '';
-  private _width = 100;
-  private _height = 100;
+  private _width = 80;
+  private _height = 80;
 
   constructor(settings?: ImageItemSettings) {
     super(PdfItemType.IMAGE, settings);
@@ -46,6 +46,7 @@ export class ImageElement extends PdfItem {
       ...this.parentSettings,
       src: this.src,
       width: this.width,
+      height: this.height,
     };
   }
 

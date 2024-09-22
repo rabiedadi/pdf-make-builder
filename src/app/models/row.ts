@@ -2,22 +2,24 @@ import { uuid } from '../helpers';
 import { ContainerElement } from './container';
 import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 
-type RowItemSettings = {
+export type RowItemSettings = {
   rowType?: 'header' | 'content' | 'footer';
-  verticalAlign?: 'top' | 'bottom' | 'middle';
+  columnGap?: number;
 } & PdfItemSettings;
 
 export class RowElement extends PdfItem {
   public columns: ContainerElement[] = [];
   private _rowType: 'header' | 'content' | 'footer' | undefined;
-  private _verticalAlign: 'top' | 'bottom' | 'middle' = 'top';
+  private _columnGap?: number;
 
-  constructor(public cols: number[] = [6, 6], settings?: RowItemSettings) {
+  constructor(
+    public cols: number[] = [6, 6],
+    settings?: RowItemSettings,
+    columns?: ContainerElement[]
+  ) {
     super(PdfItemType.ROW, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
     this.setRowSettings(settings);
-    for (const col of cols) {
-      this.addColumn(col);
-    }
+    columns ? (this.columns = columns) : this.initColumns(cols);
   }
 
   get rowType() {
@@ -28,19 +30,17 @@ export class RowElement extends PdfItem {
     this.changed$.next();
   }
 
-  get verticalAlign() {
-    return this._verticalAlign;
+  get columnGap() {
+    return this._columnGap;
   }
-  set verticalAlign(
-    verticalAlign: Exclude<RowItemSettings['verticalAlign'], undefined>
-  ) {
-    this._verticalAlign = verticalAlign;
+  set columnGap(columnGap: RowItemSettings['columnGap']) {
+    this._columnGap = columnGap;
     this.changed$.next();
   }
 
   get remainingCols() {
     return Math.max(
-      12 - this.columns.reduce((acc, col) => acc + col.cols, 0),
+      12 - this.columns.reduce((acc, _, i) => acc + this.cols[i], 0),
       0
     );
   }
@@ -49,7 +49,7 @@ export class RowElement extends PdfItem {
     return {
       ...this.parentSettings,
       rowType: this.rowType,
-      verticalAlign: this.verticalAlign,
+      columnGap: this.columnGap,
     };
   }
 
@@ -57,11 +57,17 @@ export class RowElement extends PdfItem {
     settings.rowType !== undefined && (this.rowType = settings.rowType);
   }
 
+  initColumns(cols: number[]) {
+    for (let i = 0; i < cols.length; i++) {
+      this.addColumn(cols[i]);
+    }
+  }
+
   addColumn(col?: number, index?: number) {
     if (this.remainingCols < 2 || this.columns.length == 6) return;
     col = col ?? Math.min(2, this.remainingCols);
     index = index !== undefined ? index : this.columns.length;
-    this.columns.splice(index, 0, new ContainerElement(col));
+    this.columns.splice(index, 0, new ContainerElement());
     !col && this.cols.splice(index, 0, col);
   }
 
@@ -86,7 +92,7 @@ export class RowElement extends PdfItem {
   }
 
   override clone(deep?: boolean): RowElement {
-    const clone = Object.assign(new RowElement(this.cols), {
+    const clone = Object.assign(new RowElement([...this.cols]), {
       uId: uuid(),
     });
     if (deep) {

@@ -1,18 +1,20 @@
 import { uuid } from '../helpers';
 import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 
-type ContainerItemSettings = {
+export type ContainerItemSettings = {
   color?: string;
   bgColor?: string;
+  alignment?: 'left' | 'center' | 'right';
 } & PdfItemSettings;
 
 export class ContainerElement extends PdfItem {
   public elements: PdfItem[] = [];
   private _color: string | undefined;
   private _bgColor: string | undefined;
+  private _alignment: 'left' | 'center' | 'right' | undefined;
   isParent = false;
 
-  constructor(public cols = 12, settings?: ContainerItemSettings) {
+  constructor(settings?: ContainerItemSettings) {
     super(PdfItemType.CONTAINER, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
     this.setContainerSettings(settings);
   }
@@ -33,11 +35,20 @@ export class ContainerElement extends PdfItem {
     this.changed$.next();
   }
 
+  get alignment() {
+    return this._alignment;
+  }
+  set alignment(alignment: ContainerItemSettings['alignment']) {
+    this._alignment = alignment;
+    this.changed$.next();
+  }
+
   get settings(): ContainerItemSettings {
     return {
       ...this.parentSettings,
       color: this.color,
       bgColor: this.bgColor,
+      alignment: this.alignment,
     };
   }
 
@@ -47,9 +58,12 @@ export class ContainerElement extends PdfItem {
   }
 
   override clone(deep?: boolean): ContainerElement {
-    const clone = Object.assign(new ContainerElement(), {
-      uId: uuid(),
-    });
+    const clone = Object.assign<ContainerElement, Partial<ContainerElement>>(
+      new ContainerElement(),
+      {
+        uId: uuid(),
+      }
+    );
     if (deep) {
       Object.assign<ContainerElement, Partial<ContainerElement>>(clone, {
         ...this.settings,

@@ -1,7 +1,8 @@
 :host {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  padding: 1rem 0;
 }
 .pdf-viewer {
   min-width: 21cm;

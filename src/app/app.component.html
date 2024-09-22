@@ -1,4 +1,40 @@
-<div style="min-width: 36cm" class="p-4 flex justify-between gap-6">
+<div class="flex items-xenter justify-center px-4 gap-4">
+  <!-- -------------------------------- back --------------------------------- -->
+  <button
+    (click)="back()"
+    class="h-10 w-10 rounded-full p-0 flex items-center justify-center border-0 bg-gray-100 hover:bg-gray-200"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <!-- -------------------------------- save --------------------------------- -->
+  <button
+    (click)="save()"
+    class="h-10 w-10 rounded-full p-0 flex items-center justify-center border-0 bg-gray-100 hover:bg-gray-200"
+  >
+    <mat-icon>save</mat-icon>
+  </button>
+  <!-- ------------------------------- forward ------------------------------- -->
+  <button
+    (click)="forward()"
+    class="h-10 w-10 rounded-full p-0 flex items-center justify-center border-0 bg-gray-100 hover:bg-gray-200"
+  >
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  <button
+    class="ml-4 h-10 rounded-md bg-gray-100 px-4 hover:bg-gray-200"
+    (click)="construct()"
+  >
+    Previw
+  </button>
+
+  <button
+    class="ml-4 h-10 rounded-md bg-gray-100 px-4 hover:bg-gray-200"
+    (click)="build()"
+  >
+    Build
+  </button>
+</div>
+<div style="min-width: 36cm" class="px-4 flex justify-between gap-6">
   <mat-tab-group
     class="flex-1 p-4"
     style="max-width: 30rem"
@@ -22,17 +58,10 @@
     <app-pdf-container
       id="form"
       [container]="(parentContainer$ | async)!"
-      [showOutline]="false"
     ></app-pdf-container>
   </div>
 </div>
-<button
-  class="mx-auto h-11 rounded-md bg-yellow-500 px-6 text-white"
-  (click)="build()"
->
-  Build & copy to clipboard
-</button>
 
-<div class="mx-6 mat-elevation-z3 rounded-sm p-4">
+<div class="mx-4 mat-elevation-z3 rounded-sm p-4">
   <pre class="text-sm">{{ docDef }}</pre>
 </div>

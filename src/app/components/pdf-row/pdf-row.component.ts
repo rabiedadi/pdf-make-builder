@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PdfItemService } from '../../services/pdf-item.service';
 import { PdfItemComponentBase } from '../pdf-item-component-base.class';
 import { PdfItem, RowElement } from '../../models';
@@ -7,6 +7,7 @@ import { PdfItem, RowElement } from '../../models';
   selector: 'app-pdf-row',
   templateUrl: './pdf-row.component.html',
   styleUrls: ['./pdf-row.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PdfRowsComponent
   extends PdfItemComponentBase<RowElement>

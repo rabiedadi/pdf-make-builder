@@ -1,10 +1,8 @@
-<div
-  class="bg-gray-200 overflow-hidden flex items-center justify-center"
-  [PdfItemStyleApplier]="control"
->
-  <span
+<div class="bg-cover bg-no-repeat bg-center" [PdfItemStyleApplier]="control">
+  <div
     *ngIf="!control.src"
-    class="font-medium text-gray-300 truncate text-sm p-4 bg-cover bg-no-repeat"
-    >Image element</span
+    class="font-medium bg-gray-200 text-gray-300 truncate text-sm p-4 flex items-center justify-center h-full w-full"
   >
+    Image element
+  </div>
 </div>

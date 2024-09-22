@@ -1,9 +1,10 @@
 import { PdfItem, PdfItemSettings, PdfItemType, dragPdfItem } from './pdfItem';
-import { ContainerElement } from './container';
-import { RowElement } from './row';
-import { ImageElement } from './image';
-import { TextElement } from './text';
-import { CheckElement } from './check';
+import { ContainerElement, ContainerItemSettings } from './container';
+import { RowElement, RowItemSettings } from './row';
+import { ImageElement, ImageItemSettings } from './image';
+import { TextElement, TextItemSettings } from './text';
+import { CheckElement, CheckItemSettings } from './check';
+import { LineElement, LineItemSettings } from './line';
 
 interface PdfElementConstructor {
   new (): PdfItem;
@@ -15,6 +16,7 @@ export const pdfItemTypeMapper: {
   text: TextElement,
   check: CheckElement,
   image: ImageElement,
+  line: LineElement,
   row: RowElement,
   container: ContainerElement,
 };
@@ -25,8 +27,15 @@ export {
   PdfItemType,
   dragPdfItem,
   ContainerElement,
+  LineElement,
   RowElement,
   ImageElement,
   TextElement,
   CheckElement,
+  RowItemSettings,
+  ImageItemSettings,
+  TextItemSettings,
+  CheckItemSettings,
+  ContainerItemSettings,
+  LineItemSettings,
 };

@@ -1,14 +1,14 @@
 import { uuid } from '../helpers';
 import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 
-type CheckItemSettings = {} & PdfItemSettings;
+export type CheckItemSettings = {} & PdfItemSettings;
 
 export class CheckElement extends PdfItem {
   private _content = '';
   // here we define the question name, if empty will be set to true
   private _value = '';
 
-  constructor() {
+  constructor(settings?: CheckItemSettings) {
     super(PdfItemType.CHECK);
   }
 

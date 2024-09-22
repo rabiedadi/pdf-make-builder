@@ -1,7 +1,7 @@
 import { uuid } from '../helpers';
 import { PdfItem, PdfItemSettings, PdfItemType } from './pdfItem';
 
-type TextItemSettings = {
+export type TextItemSettings = {
   fontSize?: number;
   bold?: boolean;
   italics?: boolean;
@@ -12,10 +12,10 @@ export class TextElement extends PdfItem {
   private _fontSize = 12;
   private _bold = false;
   private _italics = false;
-  private _color = '#484848';
+  private _color = '#000000';
 
   constructor(public content = '', settings?: TextItemSettings) {
-    super(PdfItemType.TEXT, settings ?? { pt: 4, pb: 4, pr: 0, pl: 0 });
+    super(PdfItemType.TEXT, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
     this.setTextSettings(settings);
   }
 

@@ -21,11 +21,11 @@
       >
         <ng-container *ngSwitchCase="'row'">
           <div
-            *ngFor="let c of $any(item).columns"
+            *ngFor="let c of $any(item).cols"
             class="h-10 bg-gray-200 flex-1 flex items-center justify-center text-xs text-gray-500"
-            [style.flexBasis.%]="(c.cols * 100) / 12"
+            [style.flexBasis.%]="(c * 100) / 12"
           >
-            {{ c.cols }}
+            {{ c }}
           </div>
         </ng-container>
         <ng-container *ngSwitchDefault>

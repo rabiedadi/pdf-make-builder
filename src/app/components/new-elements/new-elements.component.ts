@@ -6,6 +6,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   Input,
   OnInit,
@@ -19,6 +20,7 @@ import { dragPdfItem, PdfItemType, RowElement, PdfItem } from '../../models';
   selector: 'app-new-elements',
   templateUrl: './new-elements.component.html',
   styleUrls: ['./new-elements.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewElementsComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) dropList?: CdkDropList;

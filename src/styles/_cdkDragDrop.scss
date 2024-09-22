@@ -12,7 +12,8 @@ body.dragging {
   .item-focused {
     .editable,
     app-pdf-image > div,
-    app-pdf-check > div {
+    app-pdf-check > div,
+    app-pdf-line > svg {
       outline: none !important;
     }
   }

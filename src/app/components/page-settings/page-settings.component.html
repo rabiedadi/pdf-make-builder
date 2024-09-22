@@ -3,8 +3,8 @@
   class="grid gap-2 gap-y-4 my-8"
   style="grid-template-columns: 120px auto auto"
 >
-  <!-- ------------------------------ padding ------------------------------ -->
-  <span class="col-span-1">Padding </span>
+  <!-- ------------------------------ Margins ------------------------------ -->
+  <span class="col-span-1">Margins </span>
   <div class="col-span-2 grid grid-cols-5 gap-2">
     <div></div>
     <input
@@ -62,4 +62,15 @@
       Footer
     </button>
   </div>
+  <!-- --------------------------- default styles ---------------------------- -->
+  <span class="col-span-1">Line height</span>
+  <input
+    class="col-span-2"
+    type="number"
+    step="0.1"
+    min="1"
+    max="1.8"
+    placeholder="1 - 1.8"
+    [(ngModel)]="pdfItemService.defaultStyles.lineHeight"
+  />
 </div>

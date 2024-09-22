@@ -4,69 +4,26 @@ import { uuid } from '../helpers';
 export enum PdfItemType {
   TEXT = 'text',
   CONTAINER = 'container',
+  LINE = 'line',
   CHECK = 'check',
   IMAGE = 'image',
   ROW = 'row',
 }
 
 export type PdfItemSettings = {
+  p?: number;
+  px?: number;
+  py?: number;
   pt?: number;
   pb?: number;
   pl?: number;
   pr?: number;
-  bt?: number;
-  bb?: number;
-  bl?: number;
-  br?: number;
-  bColor?: string;
 };
 
 export class PdfItem {
   uId: string;
   changed$ = new Subject<void>();
-  private _bColor: string = '#000000';
 
-  get bColor() {
-    return this._bColor;
-  }
-  set bColor(bColor: string) {
-    this._bColor = bColor;
-    this.changed$.next();
-  }
-
-  /* --------------------------------- borders -------------------------------- */
-  private _bt = 0;
-  private _bb = 0;
-  private _bl = 0;
-  private _br = 0;
-  get bt() {
-    return this._bt;
-  }
-  set bt(bt: number) {
-    this._bt = bt;
-    this.changed$.next();
-  }
-  get bb() {
-    return this._bb;
-  }
-  set bb(bb: number) {
-    this._bb = bb;
-    this.changed$.next();
-  }
-  get bl() {
-    return this._bl;
-  }
-  set bl(bl: number) {
-    this._bl = bl;
-    this.changed$.next();
-  }
-  get br() {
-    return this._br;
-  }
-  set br(br: number) {
-    this._br = br;
-    this.changed$.next();
-  }
   /* -------------------------------- paddings -------------------------------- */
   private _pt = 0;
   private _pb = 0;
@@ -103,23 +60,26 @@ export class PdfItem {
   }
 
   get parentSettings(): PdfItemSettings {
-    return {
-      pt: this.pt,
-      pb: this.pb,
-      pl: this.pl,
-      pr: this.pr,
-      bt: this.bt,
-      bb: this.bb,
-      bl: this.bl,
-      br: this.br,
-      bColor: this.bColor,
-    };
+    return this.pt == this.pb && this.pl == this.pb && this.pl == this.pr
+      ? { p: this.pt }
+      : this.pt == this.pb && this.pl == this.pr
+      ? {
+          px: this.pl,
+          py: this.pt,
+        }
+      : {
+          pt: this.pt,
+          pb: this.pb,
+          pl: this.pl,
+          pr: this.pr,
+        };
   }
 
   readonly iconName: string;
 
   private iconsMap: { [key in PdfItemType]: string } = {
     text: 'text_fields',
+    line: 'horizontal_rule',
     image: 'image',
     check: 'check_box',
     row: 'view_week',
@@ -133,18 +93,25 @@ export class PdfItem {
   }
 
   setSettings(settings: PdfItemSettings) {
-    settings.bColor != undefined && (this.bColor = settings.bColor);
-    settings.bt != undefined && (this.bt = settings.bt);
-    settings.bb != undefined && (this.bb = settings.bb);
-    settings.bl != undefined && (this.bl = settings.bl);
-    settings.br != undefined && (this.br = settings.br);
-    settings.pt != undefined && (this.pt = settings.pt);
-    settings.pb != undefined && (this.pb = settings.pb);
-    settings.pl != undefined && (this.pl = settings.pl);
-    settings.pr != undefined && (this.pr = settings.pr);
+    const { p, py, px, pt, pb, pl, pr } = settings;
+
+    if (p !== undefined) {
+      this.pt = this.pb = this.pl = this.pr = p;
+    } else {
+      if (py !== undefined) {
+        this.pt = this.pb = py;
+      }
+      if (px !== undefined) {
+        this.pl = this.pr = px;
+      }
+      if (pt !== undefined) this.pt = pt;
+      if (pb !== undefined) this.pb = pb;
+      if (pl !== undefined) this.pl = pl;
+      if (pr !== undefined) this.pr = pr;
+    }
   }
 
-  clone(deep?: boolean): PdfItem {
+  clone(_deep?: boolean): PdfItem {
     throw new Error("Method 'clone()' not implemented");
   }
 }

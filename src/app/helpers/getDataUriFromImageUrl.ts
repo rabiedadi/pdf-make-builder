@@ -1,8 +1,10 @@
-export const getDataUriFromImageUrl = (imageUrl: string): Promise<string> => {
+export const getDataUriFromImageUrl = (
+  imageUrl: string,
+  isFallback = false
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous'; // This is important for cross-origin images
-    img.src = imageUrl;
 
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -17,7 +19,19 @@ export const getDataUriFromImageUrl = (imageUrl: string): Promise<string> => {
     };
 
     img.onerror = () => {
+      if (!isFallback) {
+        // Recursive call with fallback image
+        getDataUriFromImageUrl('assets/image-placeholder-500x500.jpg', true)
+          .then(resolve)
+          .catch(() =>
+            reject(
+              new Error('Failed to load both original and fallback images')
+            )
+          );
+      }
       reject('Failed to load image');
     };
+
+    img.src = imageUrl;
   });
 };

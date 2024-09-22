@@ -7,6 +7,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   Input,
   OnInit,
@@ -20,11 +21,11 @@ import { ContainerElement, PdfItem } from '../../models';
   selector: 'app-pdf-container',
   templateUrl: './pdf-container.component.html',
   styleUrls: ['./pdf-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PdfContainerComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkDropList) dropList?: CdkDropList;
   @Input({ required: true }) container!: ContainerElement;
-  @Input() showOutline: boolean = true;
   focusedElement = this.pdfItemService.focusedElement$;
 
   allowDropPredicate = (drag: CdkDrag, drop: CdkDropList) => {

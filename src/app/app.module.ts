@@ -19,6 +19,7 @@ import { PdfCheckComponent } from './components/pdf-check/pdf-check.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { PageSettingsComponent } from './components/page-settings/page-settings.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { PdfLineComponent } from './components/pdf-line/pdf-line.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     PdfCheckComponent,
     PdfImageComponent,
     PdfItemStyleApplier,
+    PdfLineComponent,
     ElementSettingsComponent,
     PageSettingsComponent,
   ],

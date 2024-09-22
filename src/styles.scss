@@ -4,6 +4,7 @@
 @tailwind utilities;
 
 @import "styles/cdkDragDrop";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400;1,600&display=swap");
 
 html,
 body {
@@ -11,12 +12,9 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

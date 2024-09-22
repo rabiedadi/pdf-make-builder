@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { PdfItemService } from '../../services/pdf-item.service';
 import {
@@ -12,10 +18,11 @@ import {
   selector: 'app-element-settings',
   templateUrl: './element-settings.component.html',
   styleUrls: ['./element-settings.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ElementSettingsComponent implements OnInit, OnDestroy {
-  selectedElement: PdfItem | undefined;
-  selectedContainer: ContainerElement | undefined;
+  selectedElement = signal<PdfItem | undefined>(undefined);
+  selectedContainer = signal<ContainerElement | undefined>(undefined);
   subscription: Subscription | undefined;
 
   constructor(private pdfItemService: PdfItemService) {}
@@ -24,10 +31,8 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
     this.subscription = this.pdfItemService.focusedElement$.subscribe(
       async (el) => {
         if (el) {
-          const parentContainer = await firstValueFrom(
-            this.pdfItemService.parentContainer$
-          );
-          this.getElementRecursive(parentContainer!, el.uId);
+          const root = this.pdfItemService.parentContainer$.value!;
+          this.getElementRecursive(root, el.uId);
         }
       }
     );
@@ -35,8 +40,8 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
 
   getElementRecursive(element: PdfItem, uId: string) {
     if (element.uId === uId) {
-      this.selectedElement = element;
-      this.selectedContainer = undefined;
+      this.selectedElement.set(element);
+      this.selectedContainer.set(undefined);
       return;
     }
     if (element.type === PdfItemType.ROW) {
@@ -61,7 +66,7 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
       if (index > -1) {
         element.cols.splice(index, 1);
         element.columns.splice(index, 1);
-        this.selectedContainer = undefined;
+        this.selectedContainer.set(undefined);
       } else {
         element.columns.forEach((col) => {
           this.delElementRecursive(col, uId);
@@ -75,8 +80,8 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
           return;
         }
         element.elements.splice(index, 1);
-        this.selectedElement = undefined;
-        this.selectedContainer = undefined;
+        this.selectedElement.set(undefined);
+        this.selectedContainer.set(undefined);
       } else {
         element.elements.forEach((col) => {
           this.delElementRecursive(col, uId);
@@ -97,7 +102,7 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
       const index = element.columns.findIndex((c) => c.uId === uId);
       if (index > -1) {
         const clone = element.columns[index].clone(true);
-        element.cols.splice(index, 0, (clone as ContainerElement).cols);
+        element.cols.splice(index, 0, element.cols[index]);
         element.columns.splice(index, 0, clone);
       } else {
         element.columns.forEach((col) => {

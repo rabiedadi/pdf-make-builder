@@ -5,9 +5,9 @@
 >
   <div
     *ngIf="container"
-    class="flex flex-col min-h-9 h-full relative"
-    [class.outlined]="showOutline"
+    class="flex flex-col h-full relative"
     [class.parent]="container.isParent"
+    [class.min-h-9]="!container.elements.length"
     [PdfItemStyleApplier]="container"
     cdkDropList
     [cdkDropListData]="container.elements"
@@ -17,6 +17,7 @@
   >
     <div
       *ngFor="let item of container.elements"
+      [ngClass]="{ 'w-fit': !container.isParent }"
       cdkDrag
       [ngClass]="[
         $any(item).rowType ?? '',
@@ -68,6 +69,11 @@
           *ngSwitchCase="'check'"
           [control]="$any(item)"
         ></app-pdf-check>
+
+        <app-pdf-line
+          *ngSwitchCase="'line'"
+          [control]="$any(item)"
+        ></app-pdf-line>
 
         <app-pdf-row *ngSwitchCase="'row'" [control]="$any(item)"></app-pdf-row>
       </ng-container>

@@ -13,16 +13,14 @@
   <div
     [PdfItemStyleApplier]="control"
     class="flex z-10 relative"
-    [ngClass]="[control.verticalAlign + '-align']"
-    style="gap: 4pt"
     *ngIf="control"
   >
     <div
-      *ngFor="let column of control.columns"
-      [style.flexBasis.%]="(column.cols * 100) / 12"
+      *ngFor="let col of control.cols; index as i"
+      [style.flexBasis.%]="(col * 100) / 12"
       class="flex-initial no-drop items-stretch"
     >
-      <app-pdf-container [container]="column"></app-pdf-container>
+      <app-pdf-container [container]="control.columns[i]"></app-pdf-container>
     </div>
   </div>
 </ng-container>

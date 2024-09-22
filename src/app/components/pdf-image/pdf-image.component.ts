@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PdfItemComponentBase } from '../pdf-item-component-base.class';
 import { ImageElement } from '../../models';
 
@@ -6,6 +6,7 @@ import { ImageElement } from '../../models';
   selector: 'app-pdf-image',
   templateUrl: './pdf-image.component.html',
   styleUrls: ['./pdf-image.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PdfImageComponent
   extends PdfItemComponentBase<ImageElement>

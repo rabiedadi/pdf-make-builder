@@ -9,6 +9,7 @@ import {
   ImageElement,
   RowElement,
 } from '../models';
+import { LineElement } from '../models/line';
 
 interface PdfElementConstructor {
   new (...data: any): PdfItem;
@@ -23,8 +24,12 @@ export class PdfItemService {
 
   hasHeader = true;
   hasFooter = true;
+  defaultStyles = {
+    lineHeight: 1,
+  };
 
   public pdfItems: { [key in PdfItemType]: PdfElementConstructor } = {
+    line: LineElement,
     text: TextElement,
     check: CheckElement,
     image: ImageElement,
@@ -34,7 +39,7 @@ export class PdfItemService {
 
   init() {
     this.parentContainer$.next(
-      this.createPdfItem(PdfItemType.CONTAINER, 12, {
+      this.createPdfItem(PdfItemType.CONTAINER, {
         pt: 35,
         pr: 20,
         pb: 35,

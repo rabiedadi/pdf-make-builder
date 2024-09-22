@@ -1,9 +1,9 @@
-<ng-container *ngIf="selectedElement">
+<ng-container *ngIf="selectedElement() as selectedElement">
   <div
     class="grid gap-2 gap-y-4 my-8"
     style="grid-template-columns: 120px auto auto"
   >
-    <!-- -------------------------------- delet -------------------------------- -->
+    <!-- -------------------------------- delete -------------------------------- -->
     <span class="col-span-1"></span>
     <div class="col-span-1 flex justify-center">
       <mat-icon class="cursor-pointer" (click)="delElement(selectedElement.uId)"
@@ -17,53 +17,9 @@
         >copy_all</mat-icon
       >
     </div>
-    <!-- ------------------------------- Border -------------------------------- -->
-    <span class="col-span-1">Border </span>
-    <div class="col-span-2 grid grid-cols-5 gap-2">
-      <div></div>
-      <input
-        type="number"
-        class="col-start-2 col-span-3 text-center"
-        max="1"
-        min="0"
-        [(ngModel)]="selectedElement.bt"
-      />
-      <div></div>
 
-      <input
-        type="number"
-        class="col-start-1 col-span-2 text-center"
-        max="1"
-        min="0"
-        [(ngModel)]="selectedElement.bl"
-      />
-
-      <input
-        type="color"
-        class="col-start-3 col-span-1"
-        [(ngModel)]="selectedElement.bColor"
-      />
-
-      <input
-        type="number"
-        class="col-start-4 col-span-2 text-center"
-        max="1"
-        min="0"
-        [(ngModel)]="selectedElement.br"
-      />
-      <div></div>
-
-      <input
-        type="number"
-        class="col-start-2 col-span-3 text-center"
-        max="1"
-        min="0"
-        [(ngModel)]="selectedElement.bb"
-      />
-      <div></div>
-    </div>
-    <!-- ------------------------------ padding ------------------------------ -->
-    <span class="col-span-1">Padding </span>
+    <!-- ------------------------------ Margins ------------------------------ -->
+    <span class="col-span-1">Margins </span>
     <div class="col-span-2 grid grid-cols-5 gap-2">
       <div></div>
       <input
@@ -186,69 +142,83 @@
       />
     </ng-container>
 
+    <!-- ---------------------------- line element ----------------------------- -->
+    <ng-container *ngIf="selectedElement.type == 'line'">
+      <span class="col-span-1">Coordinates </span>
+      <div class="col-span-2 grid grid-cols-5 gap-2">
+        <div></div>
+        <input
+          type="number"
+          class="col-start-2 col-span-3 text-center"
+          min="0"
+          [(ngModel)]="$any(selectedElement).y1"
+        />
+        <div></div>
+
+        <input
+          type="number"
+          class="col-start-1 col-span-2 text-center"
+          min="0"
+          [(ngModel)]="$any(selectedElement).x1"
+        />
+
+        <input
+          type="number"
+          class="col-start-2 col-span-1 text-center"
+          min="0"
+          [(ngModel)]="$any(selectedElement).lineWidth"
+        />
+
+        <input
+          type="number"
+          class="col-start-4 col-span-2 text-center"
+          min="0"
+          [(ngModel)]="$any(selectedElement).x2"
+        />
+        <div></div>
+
+        <input
+          type="number"
+          class="col-start-2 col-span-3 text-center"
+          min="0"
+          [(ngModel)]="$any(selectedElement).y2"
+        />
+        <div></div>
+      </div>
+    </ng-container>
+
     <!-- ----------------------------- row-element ----------------------------- -->
     <ng-container *ngIf="selectedElement.type == 'row'">
-      <span class="col-span-1">Vertical alignment</span>
-      <div class="flex items-center col-span-2 gap-1">
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.verticalAlign == 'top'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).verticalAlign = 'top'"
-        >
-          <mat-icon class="text-xl h-5 block m-auto"
-            >vertical_align_top</mat-icon
-          >
-        </button>
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.verticalAlign == 'middle'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).verticalAlign = 'middle'"
-        >
-          <mat-icon class="text-xl h-5 block m-auto"
-            >vertical_align_center</mat-icon
-          >
-        </button>
-        <button
-          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
-          [ngClass]="[
-            $any(selectedElement)!.verticalAlign == 'bottom'
-              ? 'bg-blue-300'
-              : 'bg-gray-100'
-          ]"
-          (click)="$any(selectedElement).verticalAlign = 'bottom'"
-        >
-          <mat-icon class="text-xl h-5 block m-auto"
-            >vertical_align_bottom</mat-icon
-          >
-        </button>
-      </div>
+      <span class="col-span-1">Gap</span>
+      <input
+        class="col-span-2"
+        type="number"
+        [(ngModel)]="$any(selectedElement)!.columnGap"
+      />
 
       <span class="col-span-1">Columns</span>
       <div class="col-span-2 flex gap-2">
-        <div class="flex-1 gap-1 grid grid-cols-12">
-          <div
-            *ngFor="let col of $any(selectedElement)!.columns; index as i"
-            class="px-1 text-sm truncate h-9 rounded-sm flex items-center justify-between hover:bg-gray-200"
-            [ngClass]="[
-              'col-span-' + col.cols,
-              col.uId == selectedContainer?.uId ? 'bg-blue-300' : 'bg-gray-100'
-            ]"
-            (click)="selectedContainer = col"
+        <div class="flex-1 gap-1 flex">
+          <ng-container
+            *ngFor="let column of $any(selectedElement)!.columns; index as i"
           >
-            <input
-              class="w-full !px-0 text-center mx-auto max-w-12"
-              type="number"
-              [(ngModel)]="col.cols"
-            />
-          </div>
+            <div
+              class="flex-initial text-sm truncate h-9 rounded-sm flex items-center justify-between hover:bg-gray-200 min-w-6"
+              [style.flexBasis.%]="($any(selectedElement)!.cols[i] * 100) / 12"
+              [ngClass]="
+                column.uId == selectedContainer()?.uId
+                  ? 'bg-blue-300'
+                  : 'bg-gray-100'
+              "
+              (click)="selectedContainer = column"
+            >
+              <input
+                class="w-full !px-0 text-center mx-auto max-w-12"
+                type="number"
+                [(ngModel)]="$any(selectedElement)!.cols[i]"
+              />
+            </div>
+          </ng-container>
         </div>
         <button
           *ngIf="$any(selectedElement).remainingCols"
@@ -259,7 +229,7 @@
         </button>
       </div>
       <!-- -------------------------- container element -------------------------- -->
-      <ng-container *ngIf="selectedContainer">
+      <ng-container *ngIf="selectedContainer() as selectedContainer">
         <div class="col-span-3">
           <hr />
           <p class="text-center p-4 text-base">Container settings</p>
@@ -290,53 +260,51 @@
             >delete</mat-icon
           >
         </div>
-        <!-- ------------------------------- border -------------------------------- -->
-        <span class="col-span-1">Border </span>
-        <div class="col-span-2 grid grid-cols-5 gap-2">
-          <div></div>
-          <input
-            type="number"
-            max="1"
-            min="0"
-            class="col-start-2 col-span-3 text-center"
-            [(ngModel)]="selectedContainer.bt"
-          />
-          <div></div>
-
-          <input
-            type="number"
-            max="1"
-            min="0"
-            class="col-start-1 col-span-2 text-center"
-            [(ngModel)]="selectedContainer.bl"
-          />
-
-          <input
-            type="color"
-            class="col-start-3 col-span-1"
-            [(ngModel)]="selectedContainer.bColor"
-          />
-
-          <input
-            type="number"
-            max="1"
-            min="0"
-            class="col-start-4 col-span-2 text-center"
-            [(ngModel)]="selectedContainer.br"
-          />
-          <div></div>
-
-          <input
-            type="number"
-            max="1"
-            min="0"
-            class="col-start-2 col-span-3 text-center"
-            [(ngModel)]="selectedContainer.bb"
-          />
-          <div></div>
+        <span class="col-span-1">Alignment</span>
+        <div class="flex items-center col-span-2 gap-1">
+          <button
+            class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+            [ngClass]="[
+              $any(selectedContainer)!.alignment == 'left'
+                ? 'bg-blue-300'
+                : 'bg-gray-100'
+            ]"
+            (click)="$any(selectedContainer).alignment = 'left'"
+          >
+            <mat-icon class="text-xl h-5 block m-auto"
+              >format_align_left</mat-icon
+            >
+          </button>
+          <button
+            class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+            [ngClass]="[
+              $any(selectedContainer)!.alignment == 'center'
+                ? 'bg-blue-300'
+                : 'bg-gray-100'
+            ]"
+            (click)="$any(selectedContainer).alignment = 'center'"
+          >
+            <mat-icon class="text-xl h-5 block m-auto"
+              >format_align_center</mat-icon
+            >
+          </button>
+          <button
+            class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+            [ngClass]="[
+              $any(selectedContainer)!.alignment == 'right'
+                ? 'bg-blue-300'
+                : 'bg-gray-100'
+            ]"
+            (click)="$any(selectedContainer).alignment = 'right'"
+          >
+            <mat-icon class="text-xl h-5 block m-auto"
+              >format_align_right</mat-icon
+            >
+          </button>
         </div>
-        <!-- ------------------------------ padding ------------------------------ -->
-        <span class="col-span-1">Padding </span>
+
+        <!-- ------------------------------ Margins ------------------------------ -->
+        <span class="col-span-1">Margins </span>
         <div class="col-span-2 grid grid-cols-5 gap-2">
           <div></div>
           <input
