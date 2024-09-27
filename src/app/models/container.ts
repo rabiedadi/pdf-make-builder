@@ -12,7 +12,7 @@ export class ContainerElement extends PdfItem {
   private _color: string | undefined;
   private _bgColor: string | undefined;
   private _alignment: 'left' | 'center' | 'right' | undefined;
-  isParent = false;
+  isParent: boolean | undefined;
 
   constructor(settings?: ContainerItemSettings) {
     super(PdfItemType.CONTAINER, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
@@ -55,6 +55,7 @@ export class ContainerElement extends PdfItem {
   setContainerSettings(settings: ContainerItemSettings = {}) {
     settings.color !== undefined && (this._color = settings.color);
     settings.bgColor !== undefined && (this._bgColor = settings.bgColor);
+    settings.alignment !== undefined && (this._alignment = settings.alignment);
   }
 
   override clone(deep?: boolean): ContainerElement {

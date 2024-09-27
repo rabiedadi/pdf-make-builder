@@ -7,6 +7,7 @@ export type LineItemSettings = {
   x2?: number;
   y2?: number;
   lineWidth?: number;
+  lineColor?: string;
 } & PdfItemSettings;
 
 export class LineElement extends PdfItem {
@@ -15,6 +16,7 @@ export class LineElement extends PdfItem {
   private _x2 = 100;
   private _y2 = 1;
   private _lineWidth = 2;
+  private _lineColor: string | undefined;
 
   constructor(settings?: LineItemSettings) {
     super(PdfItemType.LINE, settings ?? { pt: 0, pb: 0, pr: 0, pl: 0 });
@@ -61,6 +63,14 @@ export class LineElement extends PdfItem {
     this.changed$.next();
   }
 
+  get lineColor() {
+    return this._lineColor;
+  }
+  set lineColor(lineColor: string | undefined) {
+    this._lineColor = lineColor;
+    this.changed$.next();
+  }
+
   get settings(): LineItemSettings {
     return {
       ...this.parentSettings,
@@ -69,6 +79,7 @@ export class LineElement extends PdfItem {
       x2: this.x2,
       y2: this.y2,
       lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
     };
   }
 
@@ -78,6 +89,7 @@ export class LineElement extends PdfItem {
     settings.x2 !== undefined && (this.x2 = settings.x2);
     settings.y2 !== undefined && (this.y2 = settings.y2);
     settings.lineWidth !== undefined && (this.lineWidth = settings.lineWidth);
+    settings.lineColor !== undefined && (this.lineColor = settings.lineColor);
   }
 
   override clone(deep?: boolean): LineElement {

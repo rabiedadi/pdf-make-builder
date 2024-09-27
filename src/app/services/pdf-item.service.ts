@@ -26,6 +26,8 @@ export class PdfItemService {
   hasFooter = true;
   defaultStyles = {
     lineHeight: 1,
+    fontSize: 10,
+    color: '#000000',
   };
 
   public pdfItems: { [key in PdfItemType]: PdfElementConstructor } = {

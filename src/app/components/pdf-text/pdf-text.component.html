@@ -1,12 +1,31 @@
 <div
+  *ngIf="control.pageBreak === 'before'"
+  class="page-break relative h-40 mx-auto z-10"
+>
+  <hr
+    class="absolute border-yellow-500 left-1/2 top-20 -translate-x-1/2"
+    style="width: 21cm"
+  />
+</div>
+<div
   #editable
   class="editable"
   contentEditable="true"
   spellcheck="false"
   placeholder="Type something..."
-  [innerText]="control.content"
+  [innerText]="control.preview"
   [PdfItemStyleApplier]="control"
   [style.font-size.pt]="control.fontSize"
   [style.font-weight]="control.bold ? '500' : '400'"
   (input)="onInput($event)"
+  (click)="openLink($event)"
 ></div>
+<div
+  *ngIf="control.pageBreak === 'after'"
+  class="page-break relative h-40 mx-auto z-10"
+>
+  <hr
+    class="absolute border-yellow-500 left-1/2 top-20 -translate-x-1/2"
+    style="width: 21cm"
+  />
+</div>

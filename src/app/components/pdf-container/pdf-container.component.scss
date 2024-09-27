@@ -10,8 +10,8 @@
     .item-focused {
       z-index: 10;
       .editable,
-      app-pdf-image > div,
-      app-pdf-check > div,
+      app-pdf-image > div:not(.page-break),
+      app-pdf-check > div:not(.page-break),
       app-pdf-line > svg {
         outline: 2px solid #279aff;
       }

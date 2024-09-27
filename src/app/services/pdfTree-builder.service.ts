@@ -55,7 +55,6 @@ export class PdfTreeBuilderService {
   private buildText(ele: TextElement): TextHistoryItem {
     return {
       type: PdfItemType.TEXT,
-      content: ele.content,
       settings: ele.settings,
     };
   }
@@ -79,7 +78,7 @@ export class PdfTreeBuilderService {
       type: PdfItemType.CONTAINER,
       settings: ele.settings,
       elements: ele.elements.map((item) => this.createHistoryFromItem(item)),
-      isParent: ele.isParent,
+      isParent: ele.isParent || undefined,
     };
   }
 
@@ -106,7 +105,7 @@ export class PdfTreeBuilderService {
         return new ImageElement(item.settings);
 
       case PdfItemType.TEXT:
-        return new TextElement(item.content, item.settings);
+        return new TextElement(item.settings);
 
       case PdfItemType.CHECK:
         return new CheckElement(item.settings);

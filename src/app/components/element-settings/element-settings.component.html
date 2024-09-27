@@ -54,18 +54,44 @@
     <!-- ---------------------------- text-element ----------------------------- -->
     <ng-container *ngIf="selectedElement.type == 'text'">
       <!-- ------------------------------- content ------------------------------- -->
+      <span class="col-span-1">Preview</span>
+      <textarea
+        placeholder="Plain text for preview"
+        class="col-span-2"
+        [(ngModel)]="$any(selectedElement)!.preview"
+      ></textarea>
+
       <span class="col-span-1">Content</span>
       <textarea
-        placeholder="Add content here"
         class="col-span-2"
+        placeholder="Actual data like [[ getText('first-name') ]]"
         [(ngModel)]="$any(selectedElement)!.content"
       ></textarea>
+      <!-- -------------------------------- Link --------------------------------- -->
+      <span class="col-span-1">Link</span>
+      <input
+        class="col-span-2"
+        placeholder="Add link"
+        [(ngModel)]="$any(selectedElement)!.link"
+      />
       <!-- ------------------------------ font size ------------------------------ -->
       <span class="col-span-1">Font size</span>
       <input
         class="col-span-2"
         type="number"
+        [placeholder]="defaultStyles.fontSize"
         [(ngModel)]="$any(selectedElement)!.fontSize"
+      />
+      <!-- ------------------------------ line hieght ------------------------------ -->
+      <span class="col-span-1">Line height</span>
+      <input
+        class="col-span-2"
+        type="number"
+        min="1"
+        max="1.8"
+        step="0.1"
+        [placeholder]="defaultStyles.lineHeight"
+        [(ngModel)]="$any(selectedElement)!.lineHeight"
       />
       <!-- ----------------------------- font style ------------------------------ -->
       <span class="col-span-1">Font Style</span>
@@ -89,6 +115,61 @@
           "
         >
           Italic
+        </button>
+      </div>
+      <span class="col-span-1">Alignment</span>
+      <div class="flex items-center col-span-2 gap-1">
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.alignment == 'left'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).alignment = 'left'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >format_align_left</mat-icon
+          >
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.alignment == 'center'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).alignment = 'center'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >format_align_center</mat-icon
+          >
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.alignment == 'right'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).alignment = 'right'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >format_align_right</mat-icon
+          >
+        </button>
+        <button
+          class="px-1 text-sm truncate flex-1 h-7 rounded-sm"
+          [ngClass]="[
+            $any(selectedElement)!.alignment == 'justify'
+              ? 'bg-blue-300'
+              : 'bg-gray-100'
+          ]"
+          (click)="$any(selectedElement).alignment = 'justify'"
+        >
+          <mat-icon class="text-xl h-5 block m-auto"
+            >format_align_justify</mat-icon
+          >
         </button>
       </div>
 
@@ -126,19 +207,34 @@
 
     <!-- ---------------------------- check element ---------------------------- -->
     <ng-container *ngIf="selectedElement.type == 'check'">
+      <span class="col-span-1">Preview</span>
+      <input
+        class="col-span-2"
+        type="string"
+        [(ngModel)]="$any(selectedElement)!.preview"
+      />
+
+      <span class="col-span-1">Label</span>
+      <input
+        class="col-span-2"
+        type="string"
+        [(ngModel)]="$any(selectedElement)!.label"
+      />
+
       <span class="col-span-1">Value</span>
       <input
         class="col-span-2"
         type="string"
-        placeholder="Leave blank to mark as checked"
+        placeholder="Add a formula e.g [[ getAnswer('payout') == 'yes' ]]"
         [(ngModel)]="$any(selectedElement)!.value"
       />
 
-      <span class="col-span-1">Content</span>
+      <span class="col-span-1">Font size</span>
       <input
         class="col-span-2"
-        type="string"
-        [(ngModel)]="$any(selectedElement)!.content"
+        type="number"
+        [placeholder]="defaultStyles.fontSize"
+        [(ngModel)]="$any(selectedElement)!.fontSize"
       />
     </ng-container>
 
@@ -166,6 +262,7 @@
           type="number"
           class="col-start-2 col-span-1 text-center"
           min="0"
+          step="0.5"
           [(ngModel)]="$any(selectedElement).lineWidth"
         />
 
@@ -185,6 +282,13 @@
         />
         <div></div>
       </div>
+
+      <span class="col-span-1">Line color</span>
+      <input
+        class="col-span-2"
+        type="color"
+        [(ngModel)]="$any(selectedElement)!.lineColor"
+      />
     </ng-container>
 
     <!-- ----------------------------- row-element ----------------------------- -->
@@ -210,7 +314,7 @@
                   ? 'bg-blue-300'
                   : 'bg-gray-100'
               "
-              (click)="selectedContainer = column"
+              (click)="selectedContainer.set(column)"
             >
               <input
                 class="w-full !px-0 text-center mx-auto max-w-12"
@@ -228,6 +332,7 @@
           +
         </button>
       </div>
+
       <!-- -------------------------- container element -------------------------- -->
       <ng-container *ngIf="selectedContainer() as selectedContainer">
         <div class="col-span-3">
@@ -351,5 +456,39 @@
     </ng-container>
 
     <ng-container *ngIf="selectedElement.type == 'container'"></ng-container>
+
+    <hr class="col-span-3 my-4" />
+    <!-- ----------------------------- page break ------------------------------ -->
+    <span class="col-span-1">Page break</span>
+    <div class="col-span-2 flex items-center gap-2">
+      <button
+        class="px-1 truncate flex-1 h-8 rounded-sm text-base"
+        [ngClass]="[
+          selectedElement.pageBreak === 'before'
+            ? 'bg-blue-300 text-white font-medium'
+            : 'bg-gray-100'
+        ]"
+        (click)="
+          selectedElement.pageBreak =
+            selectedElement.pageBreak !== 'before' ? 'before' : undefined
+        "
+      >
+        Before
+      </button>
+      <button
+        class="px-1 truncate flex-1 h-8 rounded-sm text-base"
+        [ngClass]="[
+          selectedElement.pageBreak === 'after'
+            ? 'bg-blue-300 text-white font-medium'
+            : 'bg-gray-100'
+        ]"
+        (click)="
+          selectedElement.pageBreak =
+            selectedElement.pageBreak !== 'after' ? 'after' : undefined
+        "
+      >
+        After
+      </button>
+    </div>
   </div>
 </ng-container>

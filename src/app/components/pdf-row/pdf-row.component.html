@@ -1,3 +1,12 @@
+<div
+  *ngIf="control.pageBreak === 'before'"
+  class="page-break relative h-40 mx-auto z-10"
+>
+  <hr
+    class="absolute border-yellow-500 left-1/2 top-20 -translate-x-1/2"
+    style="width: 21cm"
+  />
+</div>
 <ng-container
   *ngIf="{
     focusedElement: focusedElement | async
@@ -24,3 +33,12 @@
     </div>
   </div>
 </ng-container>
+<div
+  *ngIf="control.pageBreak === 'after'"
+  class="page-break relative h-40 mx-auto z-10"
+>
+  <hr
+    class="absolute border-yellow-500 left-1/2 top-20 -translate-x-1/2"
+    style="width: 21cm"
+  />
+</div>

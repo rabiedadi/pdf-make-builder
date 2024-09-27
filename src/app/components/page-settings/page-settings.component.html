@@ -63,14 +63,29 @@
     </button>
   </div>
   <!-- --------------------------- default styles ---------------------------- -->
+  <span class="col-span-1">Font size</span>
+  <input
+    class="col-span-2"
+    type="number"
+    min="1"
+    max="1.8"
+    placeholder="Default font size"
+    [(ngModel)]="pdfItemService.defaultStyles.fontSize"
+  />
   <span class="col-span-1">Line height</span>
   <input
     class="col-span-2"
     type="number"
     step="0.1"
     min="1"
-    max="1.8"
-    placeholder="1 - 1.8"
+    max="2"
+    placeholder="Default Line height 1 - 1.8"
     [(ngModel)]="pdfItemService.defaultStyles.lineHeight"
+  />
+  <span class="col-span-1">Text color</span>
+  <input
+    class="col-span-2"
+    type="color"
+    [(ngModel)]="pdfItemService.defaultStyles.color"
   />
 </div>

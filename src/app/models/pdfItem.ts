@@ -18,6 +18,16 @@ export type PdfItemSettings = {
   pb?: number;
   pl?: number;
   pr?: number;
+  pageBreak?: 'before' | 'after';
+};
+
+export type PdfItemRule = {
+  itemId: string;
+  ruleType: 'hideIf' | 'checkIf' | 'uncheckIf';
+  valueName: string;
+  valueType: 'question' | 'metadata';
+  rule: 'isEmpty' | 'isFalsy' | 'noEqual';
+  ruleValues: string[];
 };
 
 export class PdfItem {
@@ -29,6 +39,7 @@ export class PdfItem {
   private _pb = 0;
   private _pl = 0;
   private _pr = 0;
+  private _pageBreak: 'before' | 'after' | undefined;
 
   get pt() {
     return this._pt;
@@ -59,20 +70,31 @@ export class PdfItem {
     this.changed$.next();
   }
 
+  get pageBreak() {
+    return this._pageBreak;
+  }
+  set pageBreak(pageBreak: 'before' | 'after' | undefined) {
+    this._pageBreak = pageBreak;
+    this.changed$.next();
+  }
+
   get parentSettings(): PdfItemSettings {
-    return this.pt == this.pb && this.pl == this.pb && this.pl == this.pr
-      ? { p: this.pt }
-      : this.pt == this.pb && this.pl == this.pr
-      ? {
-          px: this.pl,
-          py: this.pt,
-        }
-      : {
-          pt: this.pt,
-          pb: this.pb,
-          pl: this.pl,
-          pr: this.pr,
-        };
+    const settings: any =
+      this.pt == this.pb && this.pl == this.pb && this.pl == this.pr
+        ? { p: this.pt }
+        : this.pt == this.pb && this.pl == this.pr
+        ? {
+            px: this.pl,
+            py: this.pt,
+          }
+        : {
+            pt: this.pt,
+            pb: this.pb,
+            pl: this.pl,
+            pr: this.pr,
+          };
+    settings.pageBreak = this.pageBreak;
+    return settings;
   }
 
   readonly iconName: string;
@@ -93,7 +115,7 @@ export class PdfItem {
   }
 
   setSettings(settings: PdfItemSettings) {
-    const { p, py, px, pt, pb, pl, pr } = settings;
+    const { p, py, px, pt, pb, pl, pr, pageBreak } = settings;
 
     if (p !== undefined) {
       this.pt = this.pb = this.pl = this.pr = p;
@@ -109,6 +131,7 @@ export class PdfItem {
       if (pl !== undefined) this.pl = pl;
       if (pr !== undefined) this.pr = pr;
     }
+    this.pageBreak = pageBreak;
   }
 
   clone(_deep?: boolean): PdfItem {

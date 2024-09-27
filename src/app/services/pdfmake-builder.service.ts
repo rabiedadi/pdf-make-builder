@@ -8,8 +8,10 @@ import {
   ImageElement,
   TextElement,
   CheckElement,
+  LineElement,
 } from '../models';
 import { PdfItemService } from './pdf-item.service';
+import { parseBoldText } from '../helpers';
 
 @Injectable({ providedIn: 'root' })
 export class PdfMakeBuilderService {
@@ -28,6 +30,8 @@ export class PdfMakeBuilderService {
         return this.BuildText(item as TextElement, _prod);
       case PdfItemType.CHECK:
         return this.BuildCheck(item as CheckElement, _prod);
+      case PdfItemType.LINE:
+        return this.BuildLine(item as LineElement, _prod);
       default:
         return {};
     }
@@ -37,22 +41,51 @@ export class PdfMakeBuilderService {
     const uri = _prod ? ele.src : await getDataUriFromImageUrl(ele.src);
     return {
       image: uri,
-      cover: {
-        width: ele.width,
-        height: ele.height,
-        valign: 'center',
-        align: 'center',
-      },
+      width: ele.width,
+      height: ele.height,
+      cover: _prod
+        ? undefined
+        : {
+            width: ele.width,
+            height: ele.height,
+            valign: 'center',
+            align: 'center',
+          },
       ...this.marginsBuilder(ele),
       ...this.styleBuilder(ele),
+      ...this.getId(ele),
+      pageBreak: ele.pageBreak,
     };
   }
 
   private async BuildText(ele: TextElement, _prod = false) {
+    const text = _prod ? ele.content : ele.preview ?? ele.content;
     return {
-      text: ele.content,
+      text: parseBoldText(text),
       ...this.marginsBuilder(ele),
       ...this.styleBuilder(ele),
+      ...this.getId(ele),
+      pageBreak: ele.pageBreak,
+    };
+  }
+
+  private async BuildLine(ele: LineElement, _prod = false) {
+    return {
+      canvas: [
+        {
+          type: 'line',
+          x1: Math.ceil(ele.x1 / 1.333), // px to pt
+          y1: Math.ceil(ele.y1 / 1.333), // px to pt
+          x2: Math.ceil(ele.x2 / 1.333), // px to pt
+          y2: Math.ceil(ele.y2 / 1.333), // px to pt
+          lineWidth: ele.lineWidth,
+          lineColor: ele.lineColor,
+        },
+      ],
+      ...this.marginsBuilder(ele),
+      ...this.styleBuilder(ele),
+      ...this.getId(ele),
+      pageBreak: ele.pageBreak,
     };
   }
 
@@ -63,26 +96,25 @@ export class PdfMakeBuilderService {
         body: [
           [
             {
-              isTruthy: ele.value,
-              text: 'X',
+              text: _prod ? ele.value : ele.value ? '-' : 'X',
               lineHeight: 1,
               border: [true, true, true, true],
               alignment: 'center',
               fontSize: 11,
             },
             {
-              text: ele.content,
+              text: _prod ? ele.label : ele.preview,
               border: [false],
               margin: [4, 0, 0, 0],
-              fontSize: 10,
               lineHeight: 1,
+              ...this.styleBuilder(ele),
             },
           ],
         ],
-        border: [false],
-        ...this.marginsBuilder(ele),
-        ...this.styleBuilder(ele),
       },
+      ...this.marginsBuilder(ele),
+      ...this.getId(ele),
+      pageBreak: ele.pageBreak,
     };
   }
 
@@ -112,9 +144,11 @@ export class PdfMakeBuilderService {
         ele.elements.map((item: PdfItem) => this.build(item, _prod))
       );
       return {
-        stack: [...elements.map((e) => [e])],
+        stack: elements,
         ...this.marginsBuilder(ele),
         ...this.styleBuilder(ele),
+        ...this.getId(ele),
+        pageBreak: ele.pageBreak,
       };
     }
   }
@@ -131,18 +165,28 @@ export class PdfMakeBuilderService {
       })),
       ...this.marginsBuilder(ele),
       ...this.styleBuilder(ele),
+      ...this.getId(ele),
+      pageBreak: ele.pageBreak,
+    };
+  }
+
+  private getId({ uId, type }: PdfItem) {
+    return {
+      id: `${type}-${uId}`,
     };
   }
 
   private marginsBuilder({ pl, pt, pr, pb }: PdfItem) {
-    return {
-      margin:
-        pl == pt && pt == pr && pr == pb
-          ? pl
-          : pl == pr && pt == pb
-          ? [pl, pt]
-          : [pl, pt, pr, pb],
-    };
+    return pl || pt || pr || pb
+      ? {
+          margin:
+            pl == pt && pt == pr && pr == pb
+              ? pl
+              : pl == pr && pt == pb
+              ? [pl, pt]
+              : [pl, pt, pr, pb],
+        }
+      : {};
   }
 
   // private bordersBuilder({ bl, bt, br, bb, bColor, type }: PdfItem) {
@@ -156,15 +200,28 @@ export class PdfMakeBuilderService {
 
   private styleBuilder(item: PdfItem) {
     const styles: any = {};
+    const defaultS = this.pdfItemService.defaultStyles;
 
     switch (item.type) {
-      case PdfItemType.TEXT:
-        const { fontSize, bold, italics, color } = item as TextElement;
+      case PdfItemType.TEXT: {
+        const { fontSize, bold, italics, color, lineHeight } =
+          item as TextElement;
         if (color) styles['color'] = color;
-        if (fontSize) styles['fontSize'] = fontSize;
+        if (fontSize && fontSize !== defaultS.fontSize)
+          styles['fontSize'] = fontSize;
+        if (lineHeight && lineHeight !== defaultS.lineHeight)
+          styles['lineHeight'] = lineHeight;
         if (bold) styles['bold'] = true;
         if (italics) styles['italics'] = true;
         break;
+      }
+
+      case PdfItemType.CHECK: {
+        const { fontSize } = item as CheckElement;
+        if (fontSize && fontSize !== defaultS.fontSize)
+          styles['fontSize'] = fontSize;
+        break;
+      }
 
       case PdfItemType.IMAGE: {
         break;

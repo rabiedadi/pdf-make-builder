@@ -15,7 +15,6 @@ export type ImageHistoryItem = {
 export type TextHistoryItem = {
   type: PdfItemType.TEXT;
   settings: TextItemSettings;
-  content: string;
 };
 export type LineHistoryItem = {
   type: PdfItemType.LINE;
@@ -29,7 +28,7 @@ export type ContainerHistoryItem = {
   type: PdfItemType.CONTAINER;
   settings: ContainerItemSettings;
   elements: HistoryItem[];
-  isParent: boolean;
+  isParent?: boolean;
 };
 export type RowHistoryItem = {
   type: PdfItemType.ROW;

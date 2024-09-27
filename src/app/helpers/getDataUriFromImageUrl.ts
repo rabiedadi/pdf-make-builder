@@ -22,14 +22,16 @@ export const getDataUriFromImageUrl = (
       if (!isFallback) {
         // Recursive call with fallback image
         getDataUriFromImageUrl('assets/image-placeholder-500x500.jpg', true)
-          .then(resolve)
+          .then((dataUri) => {
+            console.log(555);
+            resolve(dataUri);
+          })
           .catch(() =>
             reject(
               new Error('Failed to load both original and fallback images')
             )
           );
-      }
-      reject('Failed to load image');
+      } else reject('Failed to load image');
     };
 
     img.src = imageUrl;

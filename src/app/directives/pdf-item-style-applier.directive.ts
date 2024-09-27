@@ -7,6 +7,7 @@ import {
   TextElement,
   ImageElement,
   RowElement,
+  CheckElement,
 } from '../models';
 import { PdfItemService } from '../services/pdf-item.service';
 import { LineElement } from '../models/line';
@@ -60,13 +61,18 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
       element.style.marginBottom = `${pb}${this.unit}`;
     }
     if (this.isTextElement(this.pdfItem)) {
-      const { fontSize, bold, italics, color } = this.pdfItem;
-      element.style.fontSize = `${fontSize}${this.unit}`;
-      element.style.fontWeight = bold ? '500' : '400';
+      const { fontSize, bold, italics, color, lineHeight, alignment } =
+        this.pdfItem;
+      const { color: defaultColor, lineHeight: defaultLineHeight } =
+        this.pdfItemService.defaultStyles;
+      element.style.fontSize = `${
+        fontSize ?? this.pdfItemService.defaultStyles.fontSize
+      }${this.unit}`;
+      element.style.fontWeight = bold ? '600' : '400';
       element.style.fontStyle = italics ? 'italic' : '';
-      element.style.lineHeight =
-        this.pdfItemService.defaultStyles.lineHeight.toString();
-      element.style.color = `${color}`;
+      element.style.textAlign = alignment ?? '';
+      element.style.lineHeight = (lineHeight ?? defaultLineHeight).toString();
+      element.style.color = color ?? defaultColor;
     }
 
     if (this.isContainerElement(this.pdfItem)) {
@@ -86,13 +92,13 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
     }
 
     if (this.isLineElement(this.pdfItem)) {
-      const { x1, x2, y1, y2, lineWidth } = this.pdfItem;
+      const { x1, x2, y1, y2, lineWidth, lineColor } = this.pdfItem;
       element.setAttribute('x1', `${x1}`);
       element.setAttribute('y1', `${y1}`);
       element.setAttribute('x2', `${x2}`);
       element.setAttribute('y2', `${y2}`);
       element.setAttribute('stroke-width', `${lineWidth}`);
-      element.setAttribute('stroke', `black`);
+      element.setAttribute('stroke', lineColor ?? 'black');
       element.parentElement!.setAttribute(
         'height',
         `${Math.abs(y2 - y1) || lineWidth}`
@@ -106,6 +112,15 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
     if (this.isRowElement(this.pdfItem)) {
       const { columnGap } = this.pdfItem;
       element.style.gap = `${columnGap ?? 0}${this.unit}`;
+    }
+
+    if (this.isCheckElement(this.pdfItem)) {
+      const { fontSize } = this.pdfItem;
+      const input = element.querySelector('input')!;
+      input.style.fontSize = `${
+        fontSize ?? this.pdfItemService.defaultStyles.fontSize
+      }${this.unit}`;
+      input.style.lineHeight = `1`;
     }
   }
 
@@ -127,5 +142,9 @@ export class PdfItemStyleApplier implements OnInit, OnDestroy {
 
   isLineElement(ele: PdfItem): ele is LineElement {
     return ele.type == PdfItemType.LINE;
+  }
+
+  isCheckElement(ele: PdfItem): ele is CheckElement {
+    return ele.type == PdfItemType.CHECK;
   }
 }

@@ -24,7 +24,7 @@ export class ElementSettingsComponent implements OnInit, OnDestroy {
   selectedElement = signal<PdfItem | undefined>(undefined);
   selectedContainer = signal<ContainerElement | undefined>(undefined);
   subscription: Subscription | undefined;
-
+  defaultStyles = this.pdfItemService.defaultStyles;
   constructor(private pdfItemService: PdfItemService) {}
 
   ngOnInit(): void {

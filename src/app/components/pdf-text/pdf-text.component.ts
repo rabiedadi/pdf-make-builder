@@ -40,8 +40,8 @@ export class PdfTextComponent
   }
 
   onInput(event: Event) {
-    const content = (event.target as HTMLDivElement).innerText;
-    this.control.content = content;
+    const preview = (event.target as HTMLDivElement).innerText;
+    this.control.preview = preview;
   }
 
   setCursorToEnd() {
@@ -53,6 +53,12 @@ export class PdfTextComponent
       range.collapse(false); // Move the cursor to the end of the content
       selection!.removeAllRanges();
       selection!.addRange(range);
+    }
+  }
+
+  openLink(e: MouseEvent) {
+    if (e.ctrlKey) {
+      this.control.link && window.open(this.control.link, '_blank');
     }
   }
 }
